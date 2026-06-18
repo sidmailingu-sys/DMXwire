@@ -1,0 +1,1742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DMX — Product Design Specification (UI/UX PRD Addendum)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--black:#000;--white:#fff;--accent:#FF4D00;--accent2:#FFD600;--green:#00C853;--s2:#111;--s3:#1A1A1A;--border:#2A2A2A;--muted:#666;--text:#E8E8E8}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--black);color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:15px;line-height:1.75}
+a{color:var(--accent);text-decoration:none}
+
+.cover{min-height:100vh;display:flex;flex-direction:column;justify-content:space-between;padding:56px;border-bottom:4px solid var(--accent);position:relative;overflow:hidden}
+.cover-watermark{position:absolute;font-size:280px;font-weight:700;color:#0A0A0A;bottom:-80px;right:-60px;line-height:1;user-select:none;letter-spacing:-20px;z-index:0}
+.cover-tag{display:inline-block;background:var(--accent);color:#fff;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:7px 16px;font-weight:700;position:relative;z-index:1}
+.cover h1{font-size:clamp(60px,10vw,140px);font-weight:700;letter-spacing:-6px;line-height:0.88;text-transform:uppercase;position:relative;z-index:1;margin-top:24px}
+.cover h1 .dot{color:var(--accent)}
+.cover-tagline{font-size:18px;font-weight:400;color:#888;margin-top:24px;max-width:600px;line-height:1.5;position:relative;z-index:1}
+.cover-tagline strong{color:var(--white)}
+.cover-meta{display:flex;gap:48px;position:relative;z-index:1;flex-wrap:wrap}
+.cmi .lbl{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted)}
+.cmi .val{font-size:13px;font-weight:600;color:var(--white);margin-top:3px}
+
+.page{max-width:1140px;margin:0 auto;padding:88px 52px}
+@media(max-width:720px){.page{padding:40px 24px}.cover{padding:32px 24px}.cover h1{font-size:60px;letter-spacing:-3px}}
+
+.sec{margin-bottom:96px}
+.sec-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.sec-title{font-size:clamp(28px,4vw,48px);font-weight:700;text-transform:uppercase;letter-spacing:-2px;line-height:1;border-left:5px solid var(--accent);padding-left:22px;margin-bottom:16px}
+.sec-sub{font-size:16px;color:#999;max-width:720px;margin-bottom:36px;line-height:1.6}
+hr.div{border:none;border-top:1px solid var(--border);margin:96px 0}
+
+.callout{background:var(--s2);border-left:5px solid var(--accent);padding:28px 32px;margin:32px 0;font-size:18px;font-weight:600;color:var(--white);line-height:1.4}
+.callout.yellow{border-left-color:var(--accent2);color:var(--accent2)}
+.callout.green{border-left-color:var(--green);color:var(--green)}
+.callout small{display:block;font-size:13px;font-weight:400;color:var(--muted);margin-top:8px}
+
+.banner{background:var(--accent);color:#fff;padding:22px 32px;font-size:17px;font-weight:700;text-transform:uppercase;letter-spacing:-0.5px;margin:36px 0}
+.banner.yellow{background:var(--accent2);color:#000}
+.banner.dark{background:var(--s3);color:#fff;border:2px solid #333}
+.banner.green{background:var(--green);color:#000}
+.banner.blue{background:#0057FF;color:#fff}
+
+.card{background:var(--s2);border:2px solid var(--border);padding:28px 32px;margin-bottom:16px}
+.card.red{box-shadow:6px 6px 0 var(--accent)}
+.card.yellow{box-shadow:6px 6px 0 var(--accent2)}
+.card.white{box-shadow:6px 6px 0 var(--white)}
+.card.green{box-shadow:6px 6px 0 var(--green)}
+.card.blue{box-shadow:6px 6px 0 #0057FF}
+.card h3{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;color:var(--accent)}
+.card.yellow h3{color:var(--accent2)}.card.white h3{color:var(--white)}.card.green h3{color:var(--green)}.card.blue h3{color:#4D8EFF}
+.card p,.card li{color:#BBBBBB;font-size:14px;line-height:1.65}
+.card ul{padding-left:18px}.card li{margin-bottom:6px}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px}
+@media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+.tw{overflow-x:auto;margin-top:8px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:var(--s3);color:var(--white);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:13px 16px;text-align:left;border-bottom:2px solid var(--accent)}
+tbody td{padding:13px 16px;border-bottom:1px solid var(--border);color:#BBBBBB;vertical-align:top}
+tbody tr:hover{background:var(--s2)}
+
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.badge{background:var(--s3);border:1px solid var(--border);color:var(--accent);font-family:'Space Mono',monospace;font-size:10px;padding:4px 10px;font-weight:700}
+.badge.y{color:var(--accent2);border-color:var(--accent2)}.badge.w{color:var(--white);border-color:#555}.badge.g{color:var(--green);border-color:var(--green)}.badge.b{color:#4D8EFF;border-color:#0057FF}
+
+/* ---- APP SPEC BLOCKS ---- */
+.app-header{background:var(--s3);border:2px solid var(--border);padding:36px 40px;margin-bottom:0;position:relative;overflow:hidden}
+.app-header::after{position:absolute;font-size:180px;font-weight:700;color:#0D0D0D;right:-20px;top:-30px;line-height:1;letter-spacing:-10px;z-index:0}
+.app-header .app-num{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;position:relative;z-index:1}
+.app-header h2{font-size:clamp(28px,4vw,44px);font-weight:700;text-transform:uppercase;letter-spacing:-2px;color:var(--white);position:relative;z-index:1;line-height:1;margin-bottom:10px}
+.app-header h2 span{color:var(--accent)}
+.app-header .app-desc{font-size:15px;color:#888;max-width:600px;line-height:1.6;position:relative;z-index:1}
+.app-body{border:2px solid var(--border);border-top:none;padding:36px 40px;background:var(--black);margin-bottom:32px}
+
+.page-spec{border:1px solid var(--border);margin-bottom:12px;background:var(--s3)}
+.page-spec-header{padding:16px 24px;display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--border)}
+.page-spec-num{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted)}
+.page-spec-name{font-weight:700;font-size:14px;color:var(--white);text-transform:uppercase;letter-spacing:0.5px}
+.page-spec-tag{margin-left:auto;font-family:'Space Mono',monospace;font-size:9px;padding:3px 10px;border:1px solid;text-transform:uppercase;letter-spacing:1px}
+.page-spec-tag.public{color:var(--green);border-color:var(--green)}
+.page-spec-tag.private{color:var(--accent);border-color:var(--accent)}
+.page-spec-tag.admin{color:var(--accent2);border-color:var(--accent2)}
+.page-spec-body{padding:20px 24px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:720px){.page-spec-body{grid-template-columns:1fr}}
+.psi-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.psi-content{font-size:13px;color:#BBBBBB;line-height:1.6}
+.psi-content ul{padding-left:16px}
+.psi-content li{margin-bottom:4px}
+.psi-content.full{grid-column:1/-1}
+
+.color-swatch-row{display:flex;gap:0;margin:16px 0;flex-wrap:wrap}
+.swatch{flex:1;min-width:100px;padding:20px 16px;text-align:center}
+.swatch .hex{font-family:'Space Mono',monospace;font-size:11px;margin-top:6px;font-weight:700}
+.swatch .name{font-size:10px;color:rgba(255,255,255,0.5);margin-top:3px;text-transform:uppercase;letter-spacing:1px}
+
+.font-specimen{background:var(--s2);border:1px solid var(--border);padding:28px 32px;margin-bottom:16px}
+.font-specimen .fn-name{font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:12px}
+.font-specimen .fn-display{font-size:42px;font-weight:700;letter-spacing:-2px;color:var(--white);line-height:1.1;margin-bottom:8px}
+.font-specimen .fn-meta{font-size:12px;color:var(--muted);line-height:1.8}
+
+.link-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.link-row:last-child{border-bottom:none}
+.link-from{font-family:'Space Mono',monospace;font-size:11px;color:var(--accent);min-width:180px}
+.link-arrow{color:var(--muted);font-size:16px}
+.link-to{font-size:13px;color:#BBBBBB}
+.link-trigger{font-size:11px;color:var(--muted);margin-left:auto;font-style:italic}
+
+footer{border-top:2px solid var(--border);padding:36px 52px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.footer-brand{font-size:28px;font-weight:700;letter-spacing:-2px;color:var(--white)}
+.footer-brand span{color:var(--accent)}
+.footer-meta{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);text-align:right;line-height:1.8}
+
+ul.arr li::marker{content:"→  ";color:var(--accent)}
+ul.tick li::marker{content:"✓  ";color:var(--green)}
+
+.toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:2px solid var(--border);margin-top:24px}
+.toc-item{padding:20px 28px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);display:flex;gap:16px;align-items:flex-start}
+.toc-item:nth-child(even){border-right:none}
+.toc-num{font-family:'Space Mono',monospace;font-size:11px;color:var(--accent);flex-shrink:0;margin-top:2px}
+.toc-label{font-size:14px;font-weight:600;color:var(--white)}
+.toc-sub{font-size:12px;color:var(--muted);margin-top:3px}
+@media(max-width:720px){.toc-grid{grid-template-columns:1fr}.toc-item{border-right:none}}
+
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:2px solid var(--border);margin:32px 0}
+.stat-block{padding:24px;border-right:1px solid var(--border);text-align:center}
+.stat-block:last-child{border-right:none}
+.stat-num{font-size:38px;font-weight:700;letter-spacing:-2px;color:var(--accent);line-height:1}
+.stat-label{font-size:11px;color:var(--muted);margin-top:8px;font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:0.5px}
+@media(max-width:720px){.stat-row{grid-template-columns:1fr 1fr}}
+
+.state-pill{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;padding:3px 10px;border:1px solid;margin:2px;text-transform:uppercase;letter-spacing:1px}
+.state-pill.free{color:var(--green);border-color:var(--green)}
+.state-pill.occupied{color:var(--accent2);border-color:var(--accent2)}
+.state-pill.bill{color:var(--accent);border-color:var(--accent)}
+.state-pill.settled{color:var(--muted);border-color:var(--border)}
+</style>
+</head>
+<body>
+
+<!-- ===================== COVER ===================== -->
+<div class="cover">
+  <div class="cover-watermark">UI</div>
+  <div><div class="cover-tag">PRD Addendum · UI/UX Design Specification · Confidential · 2026</div></div>
+  <div>
+    <h1>D<span class="dot">M</span>X<br><span style="font-size:clamp(24px,4vw,52px);letter-spacing:-2px;color:#666">Design &amp; Product Spec</span></h1>
+    <p class="cover-tagline">Every screen, every page, every link — <strong>fully specified.</strong> Theme, typography, palette, pages, features, and navigation for all three DMX applications and the restaurant website add-on.</p>
+  </div>
+  <div class="cover-meta">
+    <div class="cmi"><div class="lbl">Document Type</div><div class="val">UI/UX PRD Addendum</div></div>
+    <div class="cmi"><div class="lbl">Products Covered</div><div class="val">4 Apps / Dashboards</div></div>
+    <div class="cmi"><div class="lbl">Version</div><div class="val">v1.0 · June 2026</div></div>
+    <div class="cmi"><div class="lbl">Status</div><div class="val">Awaiting Design Sign-Off</div></div>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- ===================== TABLE OF CONTENTS ===================== -->
+<div class="sec">
+  <div class="sec-label">Index</div>
+  <div class="sec-title">What's in This Document</div>
+  <div class="sec-sub">A complete UI/UX specification for every surface in the DMX ecosystem — from global design tokens to per-page content and linking maps.</div>
+
+  <div class="toc-grid">
+    <div class="toc-item"><div class="toc-num">A</div><div><div class="toc-label">Global Design System</div><div class="toc-sub">Colour palette · Typography · Spacing · Component library</div></div></div>
+    <div class="toc-item"><div class="toc-num">B</div><div><div class="toc-label">App 1 — Customer Menu App</div><div class="toc-sub">PWA · QR web app · All pages + linking</div></div></div>
+    <div class="toc-item"><div class="toc-num">C</div><div><div class="toc-label">App 2 — Waiter App</div><div class="toc-sub">React Native · Android · All screens + linking</div></div></div>
+    <div class="toc-item"><div class="toc-num">D</div><div><div class="toc-label">App 3 — Admin Dashboard</div><div class="toc-sub">Next.js web · All pages + linking + content</div></div></div>
+    <div class="toc-item"><div class="toc-num">E</div><div><div class="toc-label">Add-On — DMX Web (Restaurant Site)</div><div class="toc-sub">Marketing website · SEO · All pages</div></div></div>
+    <div class="toc-item"><div class="toc-num">F</div><div><div class="toc-label">Cross-App Navigation Map</div><div class="toc-sub">Every trigger, redirect, and deep-link across all surfaces</div></div></div>
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- ===================== SECTION A: GLOBAL DESIGN SYSTEM ===================== -->
+<div class="sec" id="section-a">
+  <div class="sec-label">Section A — Global Design System</div>
+  <div class="sec-title">Design Tokens &amp; Brand Foundation</div>
+  <div class="sec-sub">Every DMX surface shares a unified design language. These tokens are the single source of truth — implemented as CSS custom properties in web apps and as a Tailwind config / React Native StyleSheet in the waiter app.</div>
+
+  <!-- COLOUR PALETTE -->
+  <div class="banner dark">A.1 — Colour Palette</div>
+
+  <div class="color-swatch-row">
+    <div class="swatch" style="background:#FF4D00"><div class="hex" style="color:#fff">#FF4D00</div><div class="name" style="color:rgba(255,255,255,0.6)">Accent / CTA</div></div>
+    <div class="swatch" style="background:#FFD600"><div class="hex" style="color:#000">#FFD600</div><div class="name" style="color:rgba(0,0,0,0.5)">Highlight / AI</div></div>
+    <div class="swatch" style="background:#00C853"><div class="hex" style="color:#000">#00C853</div><div class="name" style="color:rgba(0,0,0,0.5)">Success / Active</div></div>
+    <div class="swatch" style="background:#000000;border:1px solid #2A2A2A"><div class="hex" style="color:#fff">#000000</div><div class="name" style="color:#666">Base BG</div></div>
+    <div class="swatch" style="background:#111111"><div class="hex" style="color:#fff">#111111</div><div class="name" style="color:#666">Surface 2</div></div>
+    <div class="swatch" style="background:#1A1A1A"><div class="hex" style="color:#fff">#1A1A1A</div><div class="name" style="color:#666">Surface 3</div></div>
+    <div class="swatch" style="background:#2A2A2A"><div class="hex" style="color:#fff">#2A2A2A</div><div class="name" style="color:#666">Border</div></div>
+    <div class="swatch" style="background:#E8E8E8"><div class="hex" style="color:#000">#E8E8E8</div><div class="name" style="color:rgba(0,0,0,0.5)">Body Text</div></div>
+  </div>
+
+  <div class="tw" style="margin-top:24px">
+    <table>
+      <thead><tr><th>Token Name</th><th>Value</th><th>Usage</th><th>Apps</th></tr></thead>
+      <tbody>
+        <tr><td><code style="color:#FF4D00">--accent</code></td><td>#FF4D00</td><td>Primary CTA buttons, borders, icons, section labels, link colour</td><td>All</td></tr>
+        <tr><td><code style="color:#FFD600">--accent2</code></td><td>#FFD600</td><td>AI/analytics highlights, schema fields, add-on branding, secondary emphasis</td><td>Admin, Web</td></tr>
+        <tr><td><code style="color:#00C853">--green</code></td><td>#00C853</td><td>Success states, settled bills, active tables, positive metrics, "Available" tags</td><td>All</td></tr>
+        <tr><td><code>--black</code></td><td>#000000</td><td>App background, base canvas</td><td>All</td></tr>
+        <tr><td><code>--s2</code></td><td>#111111</td><td>Card backgrounds, modals, callout boxes</td><td>All</td></tr>
+        <tr><td><code>--s3</code></td><td>#1A1A1A</td><td>Table headers, input fields, sidebar bg, nav bar</td><td>All</td></tr>
+        <tr><td><code>--border</code></td><td>#2A2A2A</td><td>All dividers, card outlines, input outlines</td><td>All</td></tr>
+        <tr><td><code>--muted</code></td><td>#666666</td><td>Secondary text, placeholder text, disabled states, metadata</td><td>All</td></tr>
+        <tr><td><code>--text</code></td><td>#E8E8E8</td><td>Primary body text on dark backgrounds</td><td>All</td></tr>
+        <tr><td><code>--white</code></td><td>#FFFFFF</td><td>High-emphasis text, CTA labels on coloured buttons</td><td>All</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout" style="margin-top:32px">
+    Customer Menu App Exception: The customer-facing menu app may use a <strong>restaurant-specific theme override</strong> — allowing custom primary colour and logo per client. The dark base (#000) stays fixed; only --accent and logo are overridable.
+    <small>Configured once per restaurant in the Admin Dashboard → Settings → Branding tab.</small>
+  </div>
+
+  <!-- TYPOGRAPHY -->
+  <div class="banner dark" style="margin-top:48px">A.2 — Typography System</div>
+
+  <div class="g2" style="margin-top:24px">
+    <div class="font-specimen">
+      <div class="fn-name">Primary — Space Grotesk</div>
+      <div class="fn-display" style="font-family:'Space Grotesk',sans-serif">The Quick Fox</div>
+      <div class="fn-meta">
+        Weights: 300 (light), 400 (regular), 500 (medium), 600 (semibold), 700 (bold)<br>
+        Usage: All body copy, navigation labels, menu item names, prices, descriptions, card content, dashboard metrics<br>
+        Source: Google Fonts — <code>Space Grotesk</code>
+      </div>
+    </div>
+    <div class="font-specimen">
+      <div class="fn-name">Monospace — Space Mono</div>
+      <div class="fn-display" style="font-family:'Space Mono',monospace;font-size:32px">TABLE 07</div>
+      <div class="fn-meta">
+        Weights: 400 (regular), 700 (bold)<br>
+        Usage: Section labels, table numbers, order IDs, timestamps, schema fields, badge text, all uppercase micro-labels, code, API keys<br>
+        Source: Google Fonts — <code>Space Mono</code>
+      </div>
+    </div>
+  </div>
+
+  <div class="tw" style="margin-top:8px">
+    <table>
+      <thead><tr><th>Role</th><th>Font</th><th>Size</th><th>Weight</th><th>Transform</th><th>Letter-Spacing</th></tr></thead>
+      <tbody>
+        <tr><td>Display / Hero</td><td>Space Grotesk</td><td>clamp(80px, 12vw, 160px)</td><td>700</td><td>UPPERCASE</td><td>-6px</td></tr>
+        <tr><td>Page Title (H1)</td><td>Space Grotesk</td><td>clamp(30px, 4vw, 52px)</td><td>700</td><td>UPPERCASE</td><td>-2px</td></tr>
+        <tr><td>Section Heading (H2)</td><td>Space Grotesk</td><td>24px</td><td>700</td><td>UPPERCASE</td><td>-1px</td></tr>
+        <tr><td>Card Title (H3)</td><td>Space Grotesk</td><td>14–15px</td><td>700</td><td>UPPERCASE</td><td>1px</td></tr>
+        <tr><td>Body / Description</td><td>Space Grotesk</td><td>14–16px</td><td>400</td><td>None</td><td>0</td></tr>
+        <tr><td>Price / Metric</td><td>Space Grotesk</td><td>28–44px</td><td>700</td><td>None</td><td>-2px</td></tr>
+        <tr><td>Micro-label / Badge</td><td>Space Mono</td><td>9–10px</td><td>700</td><td>UPPERCASE</td><td>3–5px</td></tr>
+        <tr><td>Table Number / ID</td><td>Space Mono</td><td>11–13px</td><td>700</td><td>UPPERCASE</td><td>2px</td></tr>
+        <tr><td>Waiter App Body</td><td>Space Grotesk</td><td>16px base</td><td>400/600</td><td>None</td><td>0</td></tr>
+        <tr><td>Notification Headline</td><td>Space Grotesk</td><td>18px</td><td>700</td><td>None</td><td>-0.5px</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SPACING & LAYOUT -->
+  <div class="banner dark" style="margin-top:48px">A.3 — Spacing, Layout &amp; Grid</div>
+  <div class="g3" style="margin-top:24px">
+    <div class="card">
+      <h3>Base Spacing Unit</h3>
+      <p style="color:#BBBBBB;font-size:14px">Base unit: <strong style="color:#fff">8px</strong>. All spacing values are multiples of 8.<br><br>
+      XS: 8px · SM: 16px · MD: 24px · LG: 32px · XL: 48px · 2XL: 64px · 3XL: 96px<br><br>
+      Section bottom margin: 96px. Card padding: 28px 32px. Page padding: 88px 52px.</p>
+    </div>
+    <div class="card yellow">
+      <h3>Max Content Width</h3>
+      <p style="color:#BBBBBB;font-size:14px">Web (Admin / Customer menu): <strong style="color:#fff">max-width: 1140px</strong>, centered.<br><br>
+      Admin sidebar layout: 240px fixed sidebar + fluid content area.<br><br>
+      Waiter App: Full-width native. No max-width constraint. Optimized for ~360px–430px Android screens.</p>
+    </div>
+    <div class="card white">
+      <h3>Grid System</h3>
+      <p style="color:#BBBBBB;font-size:14px">2-column: 1fr 1fr · 16px gap<br>3-column: 1fr 1fr 1fr · 16px gap<br>4-column: 1fr 1fr 1fr 1fr · 12px gap<br><br>
+      Mobile breakpoints: Stack to 1-column below 900px for 2/3/4 col grids; below 720px for all others.</p>
+    </div>
+  </div>
+
+  <!-- COMPONENT LIBRARY -->
+  <div class="banner dark" style="margin-top:48px">A.4 — Shared Component Library</div>
+  <div class="g2" style="margin-top:24px">
+    <div class="card red">
+      <h3>Buttons</h3>
+      <ul class="arr">
+        <li><strong style="color:#fff">Primary:</strong> bg #FF4D00, text #fff, font Space Mono, 13px, uppercase, letter-spacing 2px, padding 16px 32px, no border-radius (sharp corners everywhere)</li>
+        <li><strong style="color:#fff">Secondary:</strong> bg transparent, border 2px solid #FF4D00, text #FF4D00</li>
+        <li><strong style="color:#fff">Destructive:</strong> bg transparent, border 2px solid #FF4D00, hover fills red</li>
+        <li><strong style="color:#fff">Ghost:</strong> no border, text #666, hover text #E8E8E8</li>
+        <li><strong style="color:#fff">Loading state:</strong> Spinner replaces label. Disabled opacity 0.4.</li>
+      </ul>
+    </div>
+    <div class="card yellow">
+      <h3>Input Fields</h3>
+      <ul class="arr">
+        <li>bg: #1A1A1A, border: 1px solid #2A2A2A, focus: border-color #FF4D00</li>
+        <li>Padding: 12px 16px. Font: Space Grotesk 15px. Placeholder: #666</li>
+        <li>Error state: border-color #FF4D00, red helper text below</li>
+        <li>No border-radius on any input. All corners square.</li>
+        <li>Search inputs get magnifier icon left-inset</li>
+      </ul>
+    </div>
+    <div class="card white">
+      <h3>Cards &amp; Surfaces</h3>
+      <ul class="arr">
+        <li>Base card: bg #111, border 2px solid #2A2A2A, padding 28px 32px</li>
+        <li>Accent cards: 6px solid box-shadow in accent colour (red/yellow/white/green)</li>
+        <li>Hover state: background lifts to #1A1A1A</li>
+        <li>Modal overlay: bg rgba(0,0,0,0.85), card centered with accent border-top</li>
+        <li>Toasts: right-side slide-in, accent left-border, 3s auto-dismiss</li>
+      </ul>
+    </div>
+    <div class="card green">
+      <h3>Tags, Badges &amp; Pills</h3>
+      <ul class="arr">
+        <li>Badge: bg #1A1A1A, 1px border, Space Mono 10px, 4px 10px padding</li>
+        <li>Colour variants: Red (--accent) / Yellow (--accent2) / Green / White</li>
+        <li>Status pills: AVAILABLE (green), OCCUPIED (yellow), BILL REQUESTED (red), SETTLED (muted)</li>
+        <li>Veg dot: solid green circle 10px. Non-veg: solid orange/red square 10px.</li>
+        <li>Discount badge: bg --accent2, text #000, overlaid on item card top-left</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- ===================== SECTION B: CUSTOMER MENU APP ===================== -->
+<div class="sec" id="section-b">
+  <div class="sec-label">Section B — App 1</div>
+  <div class="app-header">
+    <div class="app-num">APP 01 OF 04</div>
+    <h2>Customer Menu <span>App</span></h2>
+    <div class="app-desc">QR-triggered Progressive Web App (PWA). Opens in mobile browser — no download, no login. Serves the dine-in customer from menu discovery through to bill payment request.</div>
+    <div class="badges" style="margin-top:20px">
+      <span class="badge">Next.js 14</span><span class="badge y">PWA</span><span class="badge w">TailwindCSS</span><span class="badge g">Mobile-First</span><span class="badge">No Auth</span>
+    </div>
+  </div>
+  <div class="app-body">
+
+    <div class="banner dark" style="margin-top:0">B.1 — Theme &amp; Visual Identity</div>
+    <div class="g2">
+      <div class="card">
+        <h3>Base Theme</h3>
+        <ul class="arr">
+          <li>Dark base (#000) — matches global DMX design system</li>
+          <li>Per-restaurant accent colour override (admin-configurable)</li>
+          <li>Restaurant logo displayed in app header, top-center</li>
+          <li>Restaurant name in Space Grotesk 700, 24px below logo</li>
+          <li>No "DMX" branding visible to customer — white-label experience</li>
+        </ul>
+      </div>
+      <div class="card yellow">
+        <h3>UI Personality</h3>
+        <ul class="arr">
+          <li>Large, tap-friendly touch targets — min 48×48px all interactive elements</li>
+          <li>Menu items: image-led cards, max 2-column grid on mobile</li>
+          <li>High-contrast price display: Space Grotesk 700, accent colour</li>
+          <li>Veg / Non-veg indicator always visible per item (FSSAI standard)</li>
+          <li>Minimal chrome — no distracting nav or branding overhead</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="banner dark" style="margin-top:32px">B.2 — Pages &amp; Screens</div>
+
+    <!-- PAGE: SPLASH / QR LANDING -->
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">B-01</div>
+        <div class="page-spec-name">QR Landing / Table Identification Screen</div>
+        <div class="page-spec-tag public">Public</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route</div>
+          <div class="psi-content"><code>/menu/[restaurantSlug]?table=[tableId]</code></div>
+        </div>
+        <div>
+          <div class="psi-label">Trigger</div>
+          <div class="psi-content">Customer scans QR code on table sticker</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li>Restaurant logo + name (full width, centered)</li>
+            <li>Table number displayed prominently: "You're at Table [N]" — Space Mono, large</li>
+            <li>Animated loading state while menu data fetches (skeleton cards)</li>
+            <li>Session token generated and stored in sessionStorage — ties all orders to table</li>
+            <li>If restaurant is closed (schedule-based): full-screen closed state with opening hours</li>
+            <li>Auto-redirects to Menu Home (B-02) on successful load (&lt;800ms target)</li>
+            <li>Error state: "Menu unavailable — please ask your waiter" if API fails</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ Menu Home (B-02) on success</div>
+        </div>
+        <div>
+          <div class="psi-label">No Auth Required</div>
+          <div class="psi-content">Anonymous session. No email or phone collected.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: MENU HOME -->
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">B-02</div>
+        <div class="page-spec-name">Menu Home — Category Browser</div>
+        <div class="page-spec-tag public">Public</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route</div>
+          <div class="psi-content"><code>/menu/[slug]/browse</code></div>
+        </div>
+        <div>
+          <div class="psi-label">Trigger</div>
+          <div class="psi-content">Auto-loaded after QR landing. Persistent home screen.</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li><strong>Sticky Header:</strong> Restaurant name + logo left, cart icon (with item count badge) right, table number chip center</li>
+            <li><strong>Filter Bar (horizontal scroll):</strong> All · Veg Only · Non-Veg · Popular · [Dynamic categories e.g. "Starters", "Mains", "Drinks"]</li>
+            <li><strong>Active Discount Banner:</strong> Slides in if any items have current discounts — "🔥 20% off on [Item]" — tappable, jumps to item</li>
+            <li><strong>AI Recommendation Strip:</strong> Horizontal scroll of 3 items tagged "Most Ordered", "Chef's Pick", "Worth It"</li>
+            <li><strong>Category Sections:</strong> Each category header sticky on scroll. Items render as 2-col card grid.</li>
+            <li><strong>Item Card:</strong> Photo (16:9, lazy-loaded), name, short description (1 line truncated), price, veg dot, "Add" button (+/- counter on tap), "Sold Out" overlay for unavailable items (greyed, no Add button)</li>
+            <li><strong>Discount badge:</strong> Yellow tag "−20%" over image if item has active discount; original price struck-through</li>
+            <li><strong>Sticky Bottom Bar:</strong> "View Cart — N items · ₹[total]" — always visible when cart has items</li>
+            <li><strong>Running Bill indicator:</strong> Tap on total in bottom bar opens Cart (B-04)</li>
+            <li>Live stock toggle: if admin marks item unavailable, it updates in real-time via socket</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ Item Detail (B-03) on card tap<br>→ Cart (B-04) on cart bar tap<br>→ Bill &amp; Status (B-06) via bottom nav</div>
+        </div>
+        <div>
+          <div class="psi-label">Key State</div>
+          <div class="psi-content">Cart persists in sessionStorage. Socket subscription for stock/discount updates.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: ITEM DETAIL -->
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">B-03</div>
+        <div class="page-spec-name">Item Detail / Notes Sheet</div>
+        <div class="page-spec-tag public">Public</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route</div>
+          <div class="psi-content">Bottom sheet / modal over B-02 (no URL change)</div>
+        </div>
+        <div>
+          <div class="psi-label">Trigger</div>
+          <div class="psi-content">Tap on item card image or name (not "Add" button)</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li>Large item photo (4:3, full-width), name, veg/non-veg tag, price (discounted price if applicable)</li>
+            <li>Full item description text</li>
+            <li>Dietary / allergen tags if set (Jain, Gluten-Free, etc.)</li>
+            <li>Special instructions text input: "Any notes? (optional)" — plain text, max 120 chars</li>
+            <li>Quantity counter: − / [N] / + buttons</li>
+            <li>"Add to Cart" CTA (accent button, full-width) — adds item+note+qty to cart</li>
+            <li>Close button (×) top-right dismisses sheet</li>
+            <li>Sold-out items: sheet shows "Currently Unavailable" state, no Add button</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ Closes back to Menu Home (B-02) on add or dismiss</div>
+        </div>
+        <div>
+          <div class="psi-label">Special</div>
+          <div class="psi-content">Notes stored per line-item in cart object. Not transmitted to kitchen — displayed on waiter's order view.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: CART -->
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">B-04</div>
+        <div class="page-spec-name">Cart — Order Review</div>
+        <div class="page-spec-tag public">Public</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route</div>
+          <div class="psi-content"><code>/menu/[slug]/cart</code></div>
+        </div>
+        <div>
+          <div class="psi-label">Trigger</div>
+          <div class="psi-content">Tap sticky bottom cart bar, or cart icon in header</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li><strong>Header:</strong> "Your Order" title + table number chip + back arrow</li>
+            <li><strong>Item list:</strong> Each item row shows — name, special note (if any), qty (editable ±), per-item price, remove (×) button</li>
+            <li><strong>Order summary:</strong> Subtotal, GST (calculated at configured %), service charge (if any), Total — all auto-computed</li>
+            <li><strong>Discount applied:</strong> Line showing discount amount if any item has active promo</li>
+            <li><strong>Editable:</strong> Customer can adjust qty or remove items before placing</li>
+            <li><strong>"Place Order" CTA:</strong> Large accent button, full-width. Disabled if cart empty.</li>
+            <li><strong>Confirmation modal:</strong> "Confirm your order? [item list] · Total ₹[X]" — Cancel / Confirm buttons</li>
+            <li><strong>"Continue ordering"</strong> link back to Menu Home for more items</li>
+            <li>Empty cart state: Illustration + "Nothing here yet. Start exploring the menu →"</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ Menu Home (B-02) via back / continue<br>→ Order Placed (B-05) on confirm</div>
+        </div>
+        <div>
+          <div class="psi-label">Key State</div>
+          <div class="psi-content">Cart survives browser back/refresh via sessionStorage. Orders placed = read-only past orders.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: ORDER PLACED -->
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">B-05</div>
+        <div class="page-spec-name">Order Placed Confirmation</div>
+        <div class="page-spec-tag public">Public</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route</div>
+          <div class="psi-content"><code>/menu/[slug]/confirmed</code></div>
+        </div>
+        <div>
+          <div class="psi-label">Trigger</div>
+          <div class="psi-content">POST /orders success response</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li>Green checkmark animation (Lottie or CSS) + "Order Received!" headline</li>
+            <li>Order summary: items + total, in read-only format</li>
+            <li>"Your waiter has been notified" sub-message with table number</li>
+            <li>Estimated wait time if configured by admin (optional)</li>
+            <li><strong>"Order More"</strong> button → back to Menu Home for additional rounds</li>
+            <li><strong>"See Full Bill"</strong> button → Bill &amp; Status screen (B-06)</li>
+            <li>Auto-redirect to Menu Home after 8 seconds if no action (with countdown)</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ Menu Home (B-02) via "Order More"<br>→ Bill &amp; Status (B-06) via "See Full Bill"</div>
+        </div>
+        <div>
+          <div class="psi-label">Real-time</div>
+          <div class="psi-content">Waiter app push notification fires simultaneously. No polling needed from customer side.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: BILL & STATUS -->
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">B-06</div>
+        <div class="page-spec-name">Live Bill &amp; Call Waiter</div>
+        <div class="page-spec-tag public">Public</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route</div>
+          <div class="psi-content"><code>/menu/[slug]/bill</code></div>
+        </div>
+        <div>
+          <div class="psi-label">Trigger</div>
+          <div class="psi-content">Bottom nav "Bill" tab, or "See Full Bill" from B-05</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li><strong>Live itemised bill:</strong> All rounds combined — each item, qty, price. Groups by round (Round 1, Round 2…)</li>
+            <li><strong>Running total:</strong> Subtotal, taxes, service charge, grand total — updates in real time as new orders are placed</li>
+            <li><strong>"Call Waiter / Request Bill"</strong> large accent CTA — fires POST /bill-request, triggers push notification to waiter within 300ms</li>
+            <li>After tap: button changes to "Waiter on the way…" state (pulsing animation), disabled until settled</li>
+            <li>Payment method display: "Your waiter will accept [Cash / UPI / Card] at the table"</li>
+            <li>GST breakdown expandable accordion (for customers who need it for expense claims)</li>
+            <li>Table number always visible at top</li>
+            <li>Once waiter marks table as Settled: screen shows "Thank You!" + restaurant logo + "We hope to see you again!"</li>
+            <li>Optional: WhatsApp bill share button (if admin has enabled it)</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ Menu Home (B-02) via bottom nav<br>→ Thank You state on settlement</div>
+        </div>
+        <div>
+          <div class="psi-label">Real-time</div>
+          <div class="psi-content">Socket subscription on session token. Bill updates live with every new order in session.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <div class="banner dark" style="margin-top:32px">B.3 — Navigation Structure</div>
+    <div class="card" style="margin-top:16px">
+      <h3>Bottom Navigation Bar (persistent after B-01)</h3>
+      <p style="margin-bottom:12px">3-tab sticky bottom nav: <strong style="color:#fff">Menu</strong> (home icon, routes to B-02) · <strong style="color:#fff">Cart</strong> (cart icon + badge, routes to B-04) · <strong style="color:#fff">Bill</strong> (receipt icon, routes to B-06). Active tab highlighted with --accent colour.</p>
+      <p>No top navigation. No sidebar. Single-level bottom tab navigation only — matches native mobile app conventions for the customer-facing context.</p>
+    </div>
+
+    <div class="banner dark" style="margin-top:32px">B.4 — Customer App Linking Map</div>
+    <div style="background:var(--s2);border:1px solid var(--border);padding:24px 28px;margin-top:16px">
+      <div class="link-row"><div class="link-from">QR Scan</div><div class="link-arrow">→</div><div class="link-to">B-01 Landing → auto → B-02 Menu Home</div><div class="link-trigger">Entry point</div></div>
+      <div class="link-row"><div class="link-from">Item card tap</div><div class="link-arrow">→</div><div class="link-to">B-03 Item Detail (bottom sheet)</div><div class="link-trigger">Touch on image/name</div></div>
+      <div class="link-row"><div class="link-from">"Add" button</div><div class="link-arrow">→</div><div class="link-to">Stays on B-02, cart badge updates</div><div class="link-trigger">Direct add to cart</div></div>
+      <div class="link-row"><div class="link-from">Cart sticky bar</div><div class="link-arrow">→</div><div class="link-to">B-04 Cart</div><div class="link-trigger">Tap anywhere on bar</div></div>
+      <div class="link-row"><div class="link-from">"Place Order"</div><div class="link-arrow">→</div><div class="link-to">B-05 Order Confirmed</div><div class="link-trigger">POST success</div></div>
+      <div class="link-row"><div class="link-from">"Order More"</div><div class="link-arrow">→</div><div class="link-to">B-02 Menu Home</div><div class="link-trigger">Additional rounds</div></div>
+      <div class="link-row"><div class="link-from">"See Full Bill"</div><div class="link-arrow">→</div><div class="link-to">B-06 Live Bill</div><div class="link-trigger">From confirmation</div></div>
+      <div class="link-row"><div class="link-from">"Call Waiter"</div><div class="link-arrow">→</div><div class="link-to">API fires, button state changes. No new screen.</div><div class="link-trigger">Bill request</div></div>
+      <div class="link-row"><div class="link-from">Settlement event</div><div class="link-arrow">→</div><div class="link-to">B-06 → Thank You state (same screen)</div><div class="link-trigger">Socket push from server</div></div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- ===================== SECTION C: WAITER APP ===================== -->
+<div class="sec" id="section-c">
+  <div class="sec-label">Section C — App 2</div>
+  <div class="app-header">
+    <div class="app-num">APP 02 OF 04</div>
+    <h2>Waiter <span>App</span></h2>
+    <div class="app-desc">React Native (Expo) Android app installed on the waiter's phone. Receives push notifications for new orders and bill requests. Provides a live floor view and order management interface. Designed for extreme speed in a fast-paced environment.</div>
+    <div class="badges" style="margin-top:20px">
+      <span class="badge">React Native</span><span class="badge y">Expo</span><span class="badge w">Android</span><span class="badge g">FCM Push</span><span class="badge">Offline Queue</span>
+    </div>
+  </div>
+  <div class="app-body">
+
+    <div class="banner dark" style="margin-top:0">C.1 — Theme &amp; Visual Identity</div>
+    <div class="g2">
+      <div class="card">
+        <h3>Theme</h3>
+        <ul class="arr">
+          <li>Same global DMX dark theme — #000 base, #FF4D00 accent</li>
+          <li>Large, bold typography — minimum 16px body, 24px+ for critical info (table numbers, totals)</li>
+          <li>High contrast for readability in dim restaurant lighting and movement</li>
+          <li>Touch targets minimum 56px height for fast fat-finger use</li>
+          <li>Minimal animations — speed over polish. No decorative motion.</li>
+        </ul>
+      </div>
+      <div class="card red">
+        <h3>Status Colour System</h3>
+        <p style="margin-bottom:12px">Every table on the floor is represented by a coloured status indicator:</p>
+        <div>
+          <span class="state-pill free">Free</span>
+          <span class="state-pill occupied">Occupied</span>
+          <span class="state-pill bill">Bill Requested</span>
+          <span class="state-pill settled">Settled</span>
+        </div>
+        <p style="margin-top:12px;font-size:13px;color:#888">Bill Requested pulses / vibrates phone. Tables waiting &gt;20 min flagged with warning icon.</p>
+      </div>
+    </div>
+
+    <div class="banner dark" style="margin-top:32px">C.2 — Screens</div>
+
+    <!-- SCREEN: LOGIN -->
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">C-01</div>
+        <div class="page-spec-name">Login Screen</div>
+        <div class="page-spec-tag private">Auth Required</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route / Screen</div>
+          <div class="psi-content">App launch screen (shown if no session)</div>
+        </div>
+        <div>
+          <div class="psi-label">Trigger</div>
+          <div class="psi-content">First launch or session expiry</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li>DMX wordmark + restaurant name (configured post-login)</li>
+            <li>Email + Password inputs (Space Grotesk, full-width)</li>
+            <li>"Login" CTA button (full-width, accent)</li>
+            <li>Error state: inline red message "Invalid credentials"</li>
+            <li>No "Forgot Password" in-app — directed to admin for reset</li>
+            <li>FCM token registered on successful login</li>
+            <li>Session persists until explicit logout — waiter stays logged in day-to-day</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ Floor View (C-02) on success</div>
+        </div>
+        <div>
+          <div class="psi-label">Roles</div>
+          <div class="psi-content">Waiter role only. Cashier role same flow, different home screen.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN: FLOOR VIEW -->
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">C-02</div>
+        <div class="page-spec-name">Floor View — Live Table Map</div>
+        <div class="page-spec-tag private">Waiter Auth</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route / Screen</div>
+          <div class="psi-content">App home / default screen after login</div>
+        </div>
+        <div>
+          <div class="psi-label">Trigger</div>
+          <div class="psi-content">Login success, bottom nav "Tables" tab</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li><strong>Header:</strong> Restaurant name, "Tables" title, waiter name chip (top-right), Notification bell (with unread badge)</li>
+            <li><strong>Table Grid:</strong> All tables rendered as cards in responsive grid (3-col on phone). Each card shows: Table number (large, Space Mono), Status pill (Free/Occupied/Bill Requested), Running total (if occupied), Time since first order (HH:MM)</li>
+            <li><strong>Bill Requested tables:</strong> Card border pulses red, phone vibrates. Sorted to top automatically.</li>
+            <li><strong>Long-wait flag:</strong> Tables open &gt;configured threshold (default 20 min) show warning icon</li>
+            <li><strong>Quick Stats bar</strong> (top): Active tables count / Free tables count / Today's orders</li>
+            <li><strong>Pull-to-refresh</strong> for manual sync</li>
+            <li>Real-time updates via Socket.io — no manual refresh needed</li>
+            <li>Filter tabs: All · Active · Bill Requested · Free</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ Table Detail (C-03) on table card tap<br>→ Notification Feed (C-05) on bell icon</div>
+        </div>
+        <div>
+          <div class="psi-label">Real-time</div>
+          <div class="psi-content">Socket subscription. Status updates &lt;500ms latency.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN: TABLE DETAIL -->
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">C-03</div>
+        <div class="page-spec-name">Table Detail — Active Order View</div>
+        <div class="page-spec-tag private">Waiter Auth</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route / Screen</div>
+          <div class="psi-content">Stack push from Floor View</div>
+        </div>
+        <div>
+          <div class="psi-label">Trigger</div>
+          <div class="psi-content">Tap on any occupied table card in C-02</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li><strong>Header:</strong> Back arrow, "Table [N]" title, table status pill</li>
+            <li><strong>Order list (by round):</strong> Round 1 / Round 2 / etc. Each item row: name, special note, qty, line total</li>
+            <li><strong>Bill Summary:</strong> Subtotal, GST, service charge, Grand Total — always visible at bottom</li>
+            <li><strong>"Add Item" button:</strong> Opens item search (C-04) — waiter can add items verbally requested by customer</li>
+            <li><strong>"Mark as Settled" CTA:</strong> Large green button. Opens payment method selector (Cash / UPI / Card / Online). Confirmation dialog then marks table free.</li>
+            <li>Time open indicator: "Open for 34 min"</li>
+            <li>Bill requested indicator: Banner "Customer requested bill — Total ₹[X]"</li>
+            <li>Customer's special notes shown per item in muted italic text</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ Item Search (C-04) via "Add Item"<br>→ Floor View (C-02) after settlement<br>→ Payment Modal (inline)</div>
+        </div>
+        <div>
+          <div class="psi-label">Key Action</div>
+          <div class="psi-content">Settlement marks table free, logs payment method, fires analytics event. Cannot be undone.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN: ADD ITEM -->
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">C-04</div>
+        <div class="page-spec-name">Add Item to Table (Waiter-Initiated Order)</div>
+        <div class="page-spec-tag private">Waiter Auth</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route / Screen</div>
+          <div class="psi-content">Modal / bottom sheet over C-03</div>
+        </div>
+        <div>
+          <div class="psi-label">Trigger</div>
+          <div class="psi-content">"Add Item" button in Table Detail</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li>Search input (auto-focused): type to filter menu items in real time</li>
+            <li>Items listed: name, price, veg dot, quantity stepper</li>
+            <li>Notes input per item</li>
+            <li>"Add to Table [N]" button — posts order attributed to waiter (not customer session)</li>
+            <li>Only available items shown. Sold-out items hidden.</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ Closes back to C-03 on add</div>
+        </div>
+        <div>
+          <div class="psi-label">Note</div>
+          <div class="psi-content">Order tagged "waiter_added: true" in DB for analytics tracking.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN: NOTIFICATIONS -->
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">C-05</div>
+        <div class="page-spec-name">Notification Feed</div>
+        <div class="page-spec-tag private">Waiter Auth</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route / Screen</div>
+          <div class="psi-content">Bottom nav "Alerts" tab</div>
+        </div>
+        <div>
+          <div class="psi-label">Trigger</div>
+          <div class="psi-content">Bell icon tap, or "Alerts" bottom tab</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li>Chronological feed of all push events for this session</li>
+            <li>Each alert: type icon (new order / bill request), "Table [N]", timestamp, summary (e.g. "3 items · ₹540")</li>
+            <li>Unread alerts highlighted with left accent border</li>
+            <li>Tap any alert → navigates to C-03 Table Detail for that table</li>
+            <li>Offline-queued alerts shown with "Delivered offline" tag when sync restored</li>
+            <li>"Clear all" option in header menu</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ C-03 Table Detail on alert tap</div>
+        </div>
+        <div>
+          <div class="psi-label">Note</div>
+          <div class="psi-content">FCM handles delivery even if app backgrounded or phone locked. BullMQ queues for reliability.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="banner dark" style="margin-top:32px">C.3 — Waiter App Navigation</div>
+    <div class="card" style="margin-top:16px">
+      <h3>Bottom Navigation (4 tabs)</h3>
+      <p><strong style="color:#fff">Tables</strong> (floor view, C-02) · <strong style="color:var(--accent)">Alerts</strong> (notifications, C-05, with unread badge) · <strong style="color:var(--accent2)">Menu</strong> (browse-only, for reference) · <strong style="color:var(--muted)">Profile</strong> (logout, settings). Active tab uses --accent underline. No sidebar, no hamburger menu. Everything accessible in 2 taps maximum.</p>
+    </div>
+
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- ===================== SECTION D: ADMIN DASHBOARD ===================== -->
+<div class="sec" id="section-d">
+  <div class="sec-label">Section D — App 3</div>
+  <div class="app-header">
+    <div class="app-num">APP 03 OF 04</div>
+    <h2>Admin <span>Dashboard</span></h2>
+    <div class="app-desc">Next.js 14 web application. Used by restaurant owner and manager roles. Provides real-time operations monitoring, full analytics, menu management, staff management, and the AI profit engine. Responsive — works on desktop and mobile.</div>
+    <div class="badges" style="margin-top:20px">
+      <span class="badge">Next.js 14</span><span class="badge y">Recharts</span><span class="badge w">Responsive</span><span class="badge g">Real-Time</span><span class="badge">Role-Based</span>
+    </div>
+  </div>
+  <div class="app-body">
+
+    <div class="banner dark" style="margin-top:0">D.1 — Theme &amp; Layout</div>
+    <div class="g2">
+      <div class="card">
+        <h3>Layout Architecture</h3>
+        <ul class="arr">
+          <li>Desktop: 240px fixed dark sidebar (bg #0A0A0A) + fluid content area</li>
+          <li>Sidebar collapses to icon-only rail (64px) at 1024px breakpoint</li>
+          <li>Mobile (&lt;768px): hamburger menu, sidebar becomes off-canvas drawer</li>
+          <li>Content max-width: 1200px centered in content area</li>
+          <li>Top bar: Restaurant name, logged-in user name, notification bell, logout</li>
+        </ul>
+      </div>
+      <div class="card yellow">
+        <h3>Dashboard Theme</h3>
+        <ul class="arr">
+          <li>Same dark system — but admin surfaces use more data-density patterns</li>
+          <li>Charts: Recharts with custom dark theme (bg transparent, gridlines #2A2A2A, accent fills)</li>
+          <li>Data tables: striped rows (#111 / #0A0A0A alternate), sortable columns</li>
+          <li>Metric cards: large number (Space Grotesk 700, 36–48px) + label + trend arrow</li>
+          <li>Profit classification colours: Star=yellow, Puzzle=orange, Sleeper=green, Dead Weight=muted red</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="banner dark" style="margin-top:32px">D.2 — Pages</div>
+
+    <!-- PAGE: LOGIN -->
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">D-01</div>
+        <div class="page-spec-name">Login</div>
+        <div class="page-spec-tag admin">Admin Auth</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route</div>
+          <div class="psi-content"><code>/admin/login</code></div>
+        </div>
+        <div>
+          <div class="psi-label">Trigger</div>
+          <div class="psi-content">Unauthenticated visit to any /admin/* route</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li>Centered card on dark BG. DMX logo + "Restaurant OS" tagline.</li>
+            <li>Email + Password inputs. "Login" CTA.</li>
+            <li>Role-based redirect: Admin → Overview (D-02), Manager → Overview, Cashier → Billing (D-07)</li>
+            <li>Error state inline. No signup — accounts created by admin only.</li>
+            <li>Remember me toggle (30-day session)</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ D-02 (Admin/Manager) or D-07 (Cashier) on success</div>
+        </div>
+        <div>
+          <div class="psi-label">Roles</div>
+          <div class="psi-content">Admin · Manager · Cashier (limited view)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: OVERVIEW -->
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">D-02</div>
+        <div class="page-spec-name">Overview — Live Operations Command Centre</div>
+        <div class="page-spec-tag admin">Admin / Manager</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route</div>
+          <div class="psi-content"><code>/admin/overview</code></div>
+        </div>
+        <div>
+          <div class="psi-label">Sidebar Nav</div>
+          <div class="psi-content">⊞ Overview (home icon)</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li><strong>Live Stats Row (4 metrics, auto-updating):</strong> Active Tables / Orders This Hour / Revenue Today / Average Order Value</li>
+            <li><strong>Live Order Feed:</strong> Real-time list of all incoming orders — table, items, time, status (Received / Served). Sorted newest first. New entries slide in.</li>
+            <li><strong>Floor Map:</strong> Visual table grid matching waiter app. Colour-coded status. Click table → drawer opens with C-03 equivalent detail view (read-only admin overlay)</li>
+            <li><strong>Revenue Counter:</strong> Live ₹ ticker, updates on every settled bill</li>
+            <li><strong>Staff Activity panel:</strong> Which waiters are logged in, orders handled today, response time average</li>
+            <li><strong>Active Discounts panel:</strong> Any running promos with time-remaining countdown</li>
+            <li><strong>Profit Alert banner (if any):</strong> "3 items flagged as Dead Weight this week — See Profit Engine →"</li>
+            <li>Date selector top-right for historical snapshot view</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ D-04 Analytics (revenue chart click-through)<br>→ D-06 Profit Engine (alert banner)<br>→ D-03 Menu (item name click)</div>
+        </div>
+        <div>
+          <div class="psi-label">Real-time</div>
+          <div class="psi-content">Socket.io subscription. All metrics update without page refresh.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: MENU MANAGEMENT -->
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">D-03</div>
+        <div class="page-spec-name">Menu Management</div>
+        <div class="page-spec-tag admin">Admin / Manager</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route</div>
+          <div class="psi-content"><code>/admin/menu</code></div>
+        </div>
+        <div>
+          <div class="psi-label">Sidebar Nav</div>
+          <div class="psi-content">☰ Menu</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li><strong>Category sidebar (left):</strong> All categories listed, drag-to-reorder, "+" Add Category button at bottom</li>
+            <li><strong>Item list (right):</strong> All items in selected category. Sortable table: Name | Price | Cost Price | Available toggle | Profit Score badge | Edit | Delete</li>
+            <li><strong>Available Toggle:</strong> On/off switch per item. Toggling immediately sends socket event — all customer screens show "Unavailable" within seconds</li>
+            <li><strong>"Add Item" CTA:</strong> Opens item form panel (slide-in from right) — Name, Description, Category, Base Price, Cost Price, Photo upload (S3/Cloudinary), Veg flag, Dietary tags</li>
+            <li><strong>Bulk actions:</strong> Select multiple items → Bulk toggle availability / Bulk delete</li>
+            <li><strong>Menu Schedule tab:</strong> Set lunch menu vs dinner menu (time-based auto-switch). Configure which categories appear at which hours.</li>
+            <li><strong>Discount Manager tab:</strong> Apply % discount to any item. Set start time, end time, % off. Live preview of customer-facing display. Active discounts shown with countdown.</li>
+            <li><strong>QR Code tab:</strong> View and re-print QR codes for each table. Download as PNG or PDF. Auto-generated URL per table.</li>
+            <li>Search bar: filter items across all categories</li>
+            <li>Profit score badge displayed per item (Star / Puzzle / Sleeper / Dead Weight) — from AI engine</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ D-06 Profit Engine (profit score badge click)<br>→ Real-time customer app update on any change</div>
+        </div>
+        <div>
+          <div class="psi-label">Tabs</div>
+          <div class="psi-content">Items · Menu Schedule · Discounts · QR Codes</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: ANALYTICS -->
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">D-04</div>
+        <div class="page-spec-name">Analytics — Sales &amp; Revenue Intelligence</div>
+        <div class="page-spec-tag admin">Admin / Manager</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route</div>
+          <div class="psi-content"><code>/admin/analytics</code></div>
+        </div>
+        <div>
+          <div class="psi-label">Sidebar Nav</div>
+          <div class="psi-content">📊 Analytics</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li><strong>Date range picker:</strong> Today / This Week / This Month / Custom. All charts respond to selection.</li>
+            <li><strong>Top KPI Cards (6):</strong> Total Revenue · Total Orders · Avg Order Value · Peak Hour · Best-Selling Item · Total Covers (customers)</li>
+            <li><strong>Revenue Chart:</strong> Line/area chart — daily revenue over selected period. Recharts. Hover tooltip shows date, revenue, order count.</li>
+            <li><strong>Hourly Heatmap:</strong> Grid of hours (7am–11pm) × days. Cell colour intensity = order volume. Identifies staffing needs visually.</li>
+            <li><strong>Top 10 Items Table:</strong> Name | Orders | Revenue | Profit Margin % | Trend (↑↓) | Profit Score</li>
+            <li><strong>Loss-making Items Panel:</strong> Red-flagged items where cost_price ≥ base_price or where margin &lt; configured threshold. Actionable buttons: "Push Discount" / "Edit Price" / "Remove from Menu"</li>
+            <li><strong>Payment Method Breakdown:</strong> Donut chart — Cash % / UPI % / Card % / Online %</li>
+            <li><strong>Table Turnover Report:</strong> Average time from first order to settlement per table. Slowest tables highlighted.</li>
+            <li><strong>Discount Effectiveness:</strong> For each ran promotion — units sold vs baseline, revenue impact, uplift %</li>
+            <li>Export button: Download as CSV (all data in selected period)</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ D-03 Menu (edit item from table)<br>→ D-06 Profit Engine (profit score click)</div>
+        </div>
+        <div>
+          <div class="psi-label">Charts</div>
+          <div class="psi-content">Recharts — dark theme, --accent fills, --border gridlines, Space Mono axis labels</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: ORDERS -->
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">D-05</div>
+        <div class="page-spec-name">Order History</div>
+        <div class="page-spec-tag admin">Admin / Manager</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route</div>
+          <div class="psi-content"><code>/admin/orders</code></div>
+        </div>
+        <div>
+          <div class="psi-label">Sidebar Nav</div>
+          <div class="psi-content">📋 Orders</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li>Searchable, filterable table of all orders. Filters: Date range, Table, Status, Payment method, Amount range.</li>
+            <li>Each row: Order ID (Space Mono), Table, Time, Items count, Total, Payment method, Status badge, View button</li>
+            <li>Click row → slide-in panel with full itemised order detail</li>
+            <li>Export selected / all as CSV</li>
+            <li>Pagination (50 per page) + infinite scroll option</li>
+            <li>Today's orders highlighted with yellow left border</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ Order Detail panel (inline slide-in, no new page)</div>
+        </div>
+        <div>
+          <div class="psi-label">Note</div>
+          <div class="psi-content">Historical orders. Live orders shown in Overview (D-02).</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: PROFIT ENGINE -->
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">D-06</div>
+        <div class="page-spec-name">Profit Maximization Engine (AI)</div>
+        <div class="page-spec-tag admin">Admin Only</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route</div>
+          <div class="psi-content"><code>/admin/profit</code></div>
+        </div>
+        <div>
+          <div class="psi-label">Sidebar Nav</div>
+          <div class="psi-content">🤖 Profit AI (badge: "Weekly")</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li><strong>Last updated timestamp + "Next update in X days"</strong> (weekly recalculation)</li>
+            <li><strong>4 Classification Panels:</strong>
+              <ul>
+                <li>⭐ <strong>STAR</strong> (Yellow): High sales + high margin — "Protect and feature these." List of items, recommended action: "Feature on menu, promote in-app"</li>
+                <li>🔴 <strong>PUZZLE</strong> (Orange): High sales + low margin — "You're popular but not profitable." Items listed. Recommended action: "Raise price by ₹X or reduce cost"</li>
+                <li>💤 <strong>SLEEPER</strong> (Green): Low sales + high margin — "Hidden gems. Push a discount." Items listed. Quick action: "Push 15% discount" button</li>
+                <li>💀 <strong>DEAD WEIGHT</strong> (Muted Red): Low sales + low margin — "These items are hurting you." Items listed. Quick action: "Remove from menu" button</li>
+              </ul>
+            </li>
+            <li><strong>Weekly Insight Summary:</strong> Narrative paragraph — "This week, [Item] is your top star. Consider removing [Item] which has sold only 3 times at a −8% margin."</li>
+            <li><strong>Matrix Visualization:</strong> 2×2 scatter plot (sales volume × margin %) with each menu item as a dot, coloured by classification</li>
+            <li><strong>Action history:</strong> Log of all AI-recommended actions taken (price changes, removals, discounts) with date and outcome</li>
+            <li>Export classification report as PDF</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ D-03 Menu (edit item price from Puzzle/Dead Weight)<br>→ D-03 Menu Discounts (from Sleeper "Push discount" CTA)</div>
+        </div>
+        <div>
+          <div class="psi-label">Engine</div>
+          <div class="psi-content">Python/scikit-learn model on FastAPI. Classifies via BCG-style matrix logic using orders + cost_price data. Runs weekly cron.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: BILLING -->
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">D-07</div>
+        <div class="page-spec-name">Billing &amp; Finance</div>
+        <div class="page-spec-tag admin">Admin / Cashier</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route</div>
+          <div class="psi-content"><code>/admin/billing</code></div>
+        </div>
+        <div>
+          <div class="psi-label">Sidebar Nav</div>
+          <div class="psi-content">💰 Billing</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li><strong>Day-end Report:</strong> Auto-generated daily. Total revenue, orders, breakdown by payment method, GST collected, service charge collected, net revenue</li>
+            <li><strong>Bill Search:</strong> Find any settled bill by table, date, amount, order ID</li>
+            <li><strong>Bill Detail:</strong> Itemised receipt view. Printable format. WhatsApp share button.</li>
+            <li><strong>Pending Bills panel:</strong> Any table with bill_requested_at set but not yet settled — real-time list</li>
+            <li><strong>Revenue by Day chart:</strong> Bar chart, last 30 days</li>
+            <li><strong>GST Report:</strong> Monthly GST summary in format compatible with GSTIN filing</li>
+            <li><strong>Razorpay section</strong> (if enabled): Online payment transactions, refunds, settlement status</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Tabs</div>
+          <div class="psi-content">Daily Report · Bill Search · Pending · GST Report · Razorpay (conditional)</div>
+        </div>
+        <div>
+          <div class="psi-label">Note</div>
+          <div class="psi-content">Cashier role lands here by default. Cannot access Profit Engine or Staff Settings.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: STAFF -->
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">D-08</div>
+        <div class="page-spec-name">Staff Management</div>
+        <div class="page-spec-tag admin">Admin Only</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route</div>
+          <div class="psi-content"><code>/admin/staff</code></div>
+        </div>
+        <div>
+          <div class="psi-label">Sidebar Nav</div>
+          <div class="psi-content">👥 Staff</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li>Table of all staff: Name | Role | Email | Status (Active/Inactive) | Last login | Orders today | Actions (Edit / Deactivate)</li>
+            <li>"Add Staff" CTA: Name, Email, Password, Role selector (Admin / Manager / Waiter / Cashier)</li>
+            <li>Role permission matrix visible (read-only reference table)</li>
+            <li>Deactivate instantly revokes app access (session invalidated)</li>
+            <li>Activity log per staff member: orders handled, response times, settlement count</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ No external links. Self-contained page.</div>
+        </div>
+        <div>
+          <div class="psi-label">Access</div>
+          <div class="psi-content">Admin role only. Hidden from Manager and Cashier sidebar.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: SETTINGS -->
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">D-09</div>
+        <div class="page-spec-name">Settings</div>
+        <div class="page-spec-tag admin">Admin Only</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route</div>
+          <div class="psi-content"><code>/admin/settings</code></div>
+        </div>
+        <div>
+          <div class="psi-label">Sidebar Nav</div>
+          <div class="psi-content">⚙ Settings (bottom of sidebar)</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Tabs &amp; Content</div>
+          <ul>
+            <li><strong>Restaurant Profile:</strong> Name, address, GST number, logo upload, phone, email</li>
+            <li><strong>Branding:</strong> Customer app accent colour picker, logo upload, restaurant-specific tagline for menu app</li>
+            <li><strong>Billing Config:</strong> GST % (CGST/SGST/IGST), service charge %, payment methods toggle (Cash / UPI / Card / Online), WhatsApp bill delivery toggle</li>
+            <li><strong>Table Setup:</strong> Number of tables, rename tables, section grouping (for multi-section floor), table wait threshold (minutes before flagging)</li>
+            <li><strong>Notification Config:</strong> Alert sound on/off, vibration pattern, notification routing (which waiter device gets which table's alerts)</li>
+            <li><strong>Integrations:</strong> Razorpay API key setup, WhatsApp Business API config</li>
+            <li><strong>License:</strong> License key display, AMC expiry date, renewal CTA</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ Changes propagate to customer app (branding), waiter app (table config), and billing (tax config) in real time</div>
+        </div>
+        <div>
+          <div class="psi-label">Access</div>
+          <div class="psi-content">Admin role only.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="banner dark" style="margin-top:32px">D.3 — Admin Dashboard Linking Map</div>
+    <div style="background:var(--s2);border:1px solid var(--border);padding:24px 28px;margin-top:16px">
+      <div class="link-row"><div class="link-from">Sidebar: Overview</div><div class="link-arrow">→</div><div class="link-to">D-02 — Live command centre</div><div class="link-trigger">Default after login</div></div>
+      <div class="link-row"><div class="link-from">Sidebar: Menu</div><div class="link-arrow">→</div><div class="link-to">D-03 Menu Management (Items tab)</div><div class="link-trigger">Direct nav</div></div>
+      <div class="link-row"><div class="link-from">Sidebar: Analytics</div><div class="link-arrow">→</div><div class="link-to">D-04 Analytics (Today default)</div><div class="link-trigger">Direct nav</div></div>
+      <div class="link-row"><div class="link-from">Sidebar: Orders</div><div class="link-arrow">→</div><div class="link-to">D-05 Order History</div><div class="link-trigger">Direct nav</div></div>
+      <div class="link-row"><div class="link-from">Sidebar: Profit AI</div><div class="link-arrow">→</div><div class="link-to">D-06 Profit Engine</div><div class="link-trigger">Direct nav</div></div>
+      <div class="link-row"><div class="link-from">Sidebar: Billing</div><div class="link-arrow">→</div><div class="link-to">D-07 Billing (Daily Report tab)</div><div class="link-trigger">Direct nav</div></div>
+      <div class="link-row"><div class="link-from">Sidebar: Staff</div><div class="link-arrow">→</div><div class="link-to">D-08 Staff Management</div><div class="link-trigger">Admin only</div></div>
+      <div class="link-row"><div class="link-from">Sidebar: Settings</div><div class="link-arrow">→</div><div class="link-to">D-09 Settings (Profile tab)</div><div class="link-trigger">Admin only</div></div>
+      <div class="link-row"><div class="link-from">D-02 Profit Alert banner</div><div class="link-arrow">→</div><div class="link-to">D-06 Profit Engine</div><div class="link-trigger">Click banner</div></div>
+      <div class="link-row"><div class="link-from">D-04 Item table row</div><div class="link-arrow">→</div><div class="link-to">D-03 Menu (edit item form pre-filled)</div><div class="link-trigger">Click "Edit" action</div></div>
+      <div class="link-row"><div class="link-from">D-06 Dead Weight CTA</div><div class="link-arrow">→</div><div class="link-to">D-03 Menu (item highlighted)</div><div class="link-trigger">"Remove from menu" action</div></div>
+      <div class="link-row"><div class="link-from">D-06 Sleeper CTA</div><div class="link-arrow">→</div><div class="link-to">D-03 Menu → Discounts tab (item pre-selected)</div><div class="link-trigger">"Push discount" action</div></div>
+      <div class="link-row"><div class="link-from">D-03 QR Codes tab</div><div class="link-arrow">→</div><div class="link-to">Customer App URL for that table (preview)</div><div class="link-trigger">Link preview</div></div>
+      <div class="link-row"><div class="link-from">D-09 License panel</div><div class="link-arrow">→</div><div class="link-to">External: DMX contact/renewal page</div><div class="link-trigger">AMC expiry ≤30 days</div></div>
+    </div>
+
+    <div class="banner dark" style="margin-top:32px">D.4 — Admin Sidebar Navigation Order</div>
+    <div class="g2" style="margin-top:16px">
+      <div class="card">
+        <h3>Admin Role Sidebar</h3>
+        <ul class="arr">
+          <li>⊞ Overview (D-02)</li>
+          <li>☰ Menu (D-03)</li>
+          <li>📊 Analytics (D-04)</li>
+          <li>📋 Orders (D-05)</li>
+          <li>🤖 Profit AI (D-06)</li>
+          <li>💰 Billing (D-07)</li>
+          <li>👥 Staff (D-08)</li>
+          <li style="color:var(--muted)">— divider —</li>
+          <li>⚙ Settings (D-09)</li>
+          <li>← Logout</li>
+        </ul>
+      </div>
+      <div class="card yellow">
+        <h3>Manager &amp; Cashier Sidebar</h3>
+        <p style="margin-bottom:12px;color:#888">Manager sees all except Staff and Settings.</p>
+        <ul class="arr">
+          <li>⊞ Overview (D-02)</li>
+          <li>☰ Menu (D-03) — edit, no delete</li>
+          <li>📊 Analytics (D-04)</li>
+          <li>📋 Orders (D-05)</li>
+          <li>🤖 Profit AI (D-06)</li>
+          <li>💰 Billing (D-07)</li>
+        </ul>
+        <p style="margin-top:12px;color:#888;font-size:12px">Cashier: Billing (D-07) only + read-only Overview</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- ===================== SECTION E: DMX WEB ===================== -->
+<div class="sec" id="section-e">
+  <div class="sec-label">Section E — Add-On</div>
+  <div class="app-header">
+    <div class="app-num">ADD-ON · ₹30,000 ONE-TIME</div>
+    <h2>DMX <span>Web</span></h2>
+    <div class="app-desc">A professional restaurant website built for Google ranking, AI search visibility, and customer trust. 5–8 pages, SEO-optimised, mobile-first. Separate from the DMX OS — sold as an add-on. Built in Next.js 14 for speed and SEO, deployed on Vercel.</div>
+    <div class="badges" style="margin-top:20px">
+      <span class="badge">Next.js 14</span><span class="badge y">SEO Optimised</span><span class="badge w">GEO / AI Search</span><span class="badge g">Schema Markup</span><span class="badge">Custom Domain</span>
+    </div>
+  </div>
+  <div class="app-body">
+
+    <div class="banner dark" style="margin-top:0">E.1 — Theme &amp; Design Philosophy</div>
+    <div class="g2">
+      <div class="card">
+        <h3>Visual Identity</h3>
+        <ul class="arr">
+          <li>Per-restaurant custom design — not a template. Designed to match the restaurant's ambiance (upscale, casual, fast-casual).</li>
+          <li>3 design tiers: Classic (elegant serif + warm tones), Bold (similar to DMX design system — dark + accent), Natural (earthy, light mode)</li>
+          <li>Restaurant owner selects preferred aesthetic during onboarding</li>
+          <li>Restaurant logo, colours, and photography are core design inputs</li>
+          <li>DMX branding NOT visible on the restaurant site — fully white-label</li>
+        </ul>
+      </div>
+      <div class="card yellow">
+        <h3>Technical Standards</h3>
+        <ul class="arr">
+          <li>Core Web Vitals: LCP &lt;1.5s, CLS &lt;0.1, FID &lt;100ms (Google ranking factors)</li>
+          <li>Mobile-first responsive (Google mobile-first indexing)</li>
+          <li>Next.js SSG/ISR for near-instant page loads and SEO crawlability</li>
+          <li>Restaurant schema markup (LocalBusiness, Restaurant, Menu, Review schemas)</li>
+          <li>Open Graph + Twitter Card metadata on all pages</li>
+          <li>Sitemap.xml + robots.txt auto-generated</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="banner dark" style="margin-top:32px">E.2 — Pages</div>
+
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">E-01</div>
+        <div class="page-spec-name">Home</div>
+        <div class="page-spec-tag public">Public</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route</div>
+          <div class="psi-content"><code>/</code> — root domain</div>
+        </div>
+        <div>
+          <div class="psi-label">SEO Priority</div>
+          <div class="psi-content">Highest. Primary landing for Google searches.</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li><strong>Hero Section:</strong> Full-width food/ambiance photography (hero image), restaurant name, one-line tagline, two CTAs: "View Menu" (→ E-03) + "Book a Table" (→ E-05 or WhatsApp)</li>
+            <li><strong>About Snippet:</strong> 2–3 sentence restaurant story, "Learn More →" link to E-04</li>
+            <li><strong>Signature Dishes:</strong> 3–4 featured menu items with photo, name, price</li>
+            <li><strong>Google Reviews Strip:</strong> 3–4 review cards pulled from Google Business API + aggregate star rating</li>
+            <li><strong>Hours &amp; Location:</strong> Opening hours table, embedded Google Maps, address, phone number (click-to-call on mobile)</li>
+            <li><strong>WhatsApp CTA button:</strong> Floating or fixed — "Chat with us on WhatsApp"</li>
+            <li><strong>Social Media links:</strong> Instagram + Facebook icons in footer</li>
+            <li><strong>Schema:</strong> LocalBusiness + Restaurant JSON-LD injected in &lt;head&gt;</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ E-02 About · E-03 Menu · E-04 Gallery · E-05 Reservations · E-06 Contact</div>
+        </div>
+        <div>
+          <div class="psi-label">Schema</div>
+          <div class="psi-content">Restaurant · LocalBusiness · OpeningHoursSpecification · AggregateRating</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">E-02</div>
+        <div class="page-spec-name">About Us</div>
+        <div class="page-spec-tag public">Public</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route</div>
+          <div class="psi-content"><code>/about</code></div>
+        </div>
+        <div>
+          <div class="psi-label">SEO Keywords</div>
+          <div class="psi-content">"[Restaurant name] story", "[cuisine] restaurant in [city]"</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li>Full restaurant story / founder story — narrative text with inline photos</li>
+            <li>Cuisine philosophy, sourcing story (if applicable)</li>
+            <li>Team photo section (optional)</li>
+            <li>Press mentions / awards (if any)</li>
+            <li>CTA: "Visit Us" → E-06 Contact / Map</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ E-03 Menu · E-06 Contact</div>
+        </div>
+        <div>
+          <div class="psi-label">Schema</div>
+          <div class="psi-content">Organization · Person (founder, optional)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">E-03</div>
+        <div class="page-spec-name">Menu</div>
+        <div class="page-spec-tag public">Public</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route</div>
+          <div class="psi-content"><code>/menu</code></div>
+        </div>
+        <div>
+          <div class="psi-label">SEO Priority</div>
+          <div class="psi-content">Very high — individual dish names indexed by Google</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li>Full menu displayed by category (Starters / Mains / Desserts / Drinks etc.)</li>
+            <li>Each item: Name, description, price, veg/non-veg tag, photo (if available)</li>
+            <li>Menu synced from DMX admin (ISR revalidation every 1hr, or on admin save event)</li>
+            <li>Tab navigation between Lunch Menu / Dinner Menu if applicable</li>
+            <li>PDF menu download link (optional, generated from live data)</li>
+            <li>Schema: MenuItem JSON-LD for each item — makes individual dishes searchable by Google</li>
+            <li>CTA: "Visit us to order · Or scan our QR at the table"</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ E-05 Reservations · E-06 Contact</div>
+        </div>
+        <div>
+          <div class="psi-label">Schema</div>
+          <div class="psi-content">Menu · MenuItem · hasMenuSection — Google surfaces individual dishes in search</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">E-04</div>
+        <div class="page-spec-name">Gallery</div>
+        <div class="page-spec-tag public">Public</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route</div>
+          <div class="psi-content"><code>/gallery</code></div>
+        </div>
+        <div>
+          <div class="psi-label">SEO Value</div>
+          <div class="psi-content">Image alt texts + file names optimised for local image search</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li>Masonry or grid photo gallery — food photography + ambiance + team</li>
+            <li>Tabs: Food · Space · Events (if applicable)</li>
+            <li>Instagram feed embed (if connected)</li>
+            <li>Lightbox on photo click (full-screen view)</li>
+            <li>All images webp-optimised, lazy-loaded, with descriptive alt text</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ Instagram profile · E-05 Reservations</div>
+        </div>
+        <div>
+          <div class="psi-label">Schema</div>
+          <div class="psi-content">ImageObject for each photo</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">E-05</div>
+        <div class="page-spec-name">Reservations / Book a Table</div>
+        <div class="page-spec-tag public">Public</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route</div>
+          <div class="psi-content"><code>/reservations</code></div>
+        </div>
+        <div>
+          <div class="psi-label">Implementation</div>
+          <div class="psi-content">WhatsApp-first (v1). Form-based (v2, roadmap)</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li>Page hero: "Reserve Your Table" headline + hero image</li>
+            <li><strong>v1 (WhatsApp flow):</strong> "Click to Reserve via WhatsApp" button — pre-filled message: "Hi! I'd like to book a table for [date] for [X] people."</li>
+            <li><strong>v2 (form, optional):</strong> Name, Phone, Date picker, Time picker, Party size, Special requests → sends to admin dashboard notification</li>
+            <li>Opening hours displayed</li>
+            <li>Walk-in note: "Walk-ins welcome based on availability"</li>
+            <li>Phone number CTA (click-to-call)</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ WhatsApp API link · E-06 Contact</div>
+        </div>
+        <div>
+          <div class="psi-label">Schema</div>
+          <div class="psi-content">ReservationPackage · hasMap · telephone</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">E-06</div>
+        <div class="page-spec-name">Contact &amp; Find Us</div>
+        <div class="page-spec-tag public">Public</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route</div>
+          <div class="psi-content"><code>/contact</code></div>
+        </div>
+        <div>
+          <div class="psi-label">SEO Priority</div>
+          <div class="psi-content">High — local "near me" searches require consistent NAP</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li>Full address (NAP — Name, Address, Phone — consistent with Google Business Profile)</li>
+            <li>Embedded Google Maps (interactive, directions link)</li>
+            <li>Opening hours table (all days, clear closed/open state)</li>
+            <li>Phone: click-to-call. WhatsApp: click-to-chat.</li>
+            <li>Email contact (if applicable)</li>
+            <li>Parking / landmark notes</li>
+            <li>Social media links: Instagram, Facebook</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ Google Maps external · WhatsApp · Instagram · Facebook</div>
+        </div>
+        <div>
+          <div class="psi-label">Schema</div>
+          <div class="psi-content">PostalAddress · GeoCoordinates · ContactPoint — critical for local SEO</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-spec">
+      <div class="page-spec-header">
+        <div class="page-spec-num">E-07</div>
+        <div class="page-spec-name">Private Dining / Events (Optional Page)</div>
+        <div class="page-spec-tag public">Public</div>
+      </div>
+      <div class="page-spec-body">
+        <div>
+          <div class="psi-label">Route</div>
+          <div class="psi-content"><code>/events</code> (only if restaurant offers private dining / events)</div>
+        </div>
+        <div>
+          <div class="psi-label">Trigger</div>
+          <div class="psi-content">Included only if relevant to the restaurant. Adds to site authority.</div>
+        </div>
+        <div class="psi-content full">
+          <div class="psi-label">Content &amp; Features</div>
+          <ul>
+            <li>Private dining packages description</li>
+            <li>Capacity information, room photos</li>
+            <li>Enquiry CTA → WhatsApp or contact form</li>
+            <li>Past events gallery (optional)</li>
+          </ul>
+        </div>
+        <div>
+          <div class="psi-label">Links Out</div>
+          <div class="psi-content">→ E-05 Reservations · E-06 Contact</div>
+        </div>
+        <div>
+          <div class="psi-label">Schema</div>
+          <div class="psi-content">EventVenue · Event</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="banner dark" style="margin-top:32px">E.3 — Website Navigation Structure</div>
+    <div class="card" style="margin-top:16px">
+      <h3>Top Navigation Bar (all pages)</h3>
+      <p>Logo (left) · Navigation links (center/right): <strong style="color:#fff">Home · Menu · Gallery · About · Contact · Book a Table</strong> (CTA button, accent style).<br><br>Mobile: Hamburger menu → full-screen overlay nav. "Book a Table" always visible as sticky bottom CTA on mobile.</p>
+    </div>
+
+    <div class="banner dark" style="margin-top:32px">E.4 — Website Linking Map</div>
+    <div style="background:var(--s2);border:1px solid var(--border);padding:24px 28px;margin-top:16px">
+      <div class="link-row"><div class="link-from">Nav: Home</div><div class="link-arrow">→</div><div class="link-to">E-01 Home</div><div class="link-trigger">All pages</div></div>
+      <div class="link-row"><div class="link-from">Nav: Menu</div><div class="link-arrow">→</div><div class="link-to">E-03 Menu</div><div class="link-trigger">All pages</div></div>
+      <div class="link-row"><div class="link-from">Nav: Gallery</div><div class="link-arrow">→</div><div class="link-to">E-04 Gallery</div><div class="link-trigger">All pages</div></div>
+      <div class="link-row"><div class="link-from">Nav: About</div><div class="link-arrow">→</div><div class="link-to">E-02 About</div><div class="link-trigger">All pages</div></div>
+      <div class="link-row"><div class="link-from">Nav: Contact</div><div class="link-arrow">→</div><div class="link-to">E-06 Contact</div><div class="link-trigger">All pages</div></div>
+      <div class="link-row"><div class="link-from">Nav: Book a Table (CTA)</div><div class="link-arrow">→</div><div class="link-to">E-05 Reservations</div><div class="link-trigger">All pages</div></div>
+      <div class="link-row"><div class="link-from">E-01 Hero "View Menu"</div><div class="link-arrow">→</div><div class="link-to">E-03 Menu</div><div class="link-trigger">Primary CTA</div></div>
+      <div class="link-row"><div class="link-from">E-01 Hero "Book a Table"</div><div class="link-arrow">→</div><div class="link-to">E-05 Reservations</div><div class="link-trigger">Secondary CTA</div></div>
+      <div class="link-row"><div class="link-from">E-01 About snippet</div><div class="link-arrow">→</div><div class="link-to">E-02 About</div><div class="link-trigger">"Learn More →"</div></div>
+      <div class="link-row"><div class="link-from">E-03 Menu "Visit us"</div><div class="link-arrow">→</div><div class="link-to">E-06 Contact (map anchor)</div><div class="link-trigger">Footer CTA</div></div>
+      <div class="link-row"><div class="link-from">WhatsApp button (all pages)</div><div class="link-arrow">→</div><div class="link-to">wa.me/[phone] — external</div><div class="link-trigger">Floating / sticky</div></div>
+      <div class="link-row"><div class="link-from">Footer: Instagram</div><div class="link-arrow">→</div><div class="link-to">instagram.com/[handle] — external, new tab</div><div class="link-trigger">All pages footer</div></div>
+      <div class="link-row"><div class="link-from">E-01 Google Review stars</div><div class="link-arrow">→</div><div class="link-to">Google Business Profile — external</div><div class="link-trigger">Click rating</div></div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- ===================== SECTION F: CROSS-APP MAP ===================== -->
+<div class="sec" id="section-f">
+  <div class="sec-label">Section F — System Map</div>
+  <div class="sec-title">Cross-App Navigation &amp; Data Flow</div>
+  <div class="sec-sub">How every surface in the DMX ecosystem connects — triggers, real-time events, and data relationships between the four applications.</div>
+
+  <div class="stat-row">
+    <div class="stat-block"><div class="stat-num">6</div><div class="stat-label">Total Pages (Customer App)</div></div>
+    <div class="stat-block"><div class="stat-num">5</div><div class="stat-label">Total Screens (Waiter App)</div></div>
+    <div class="stat-block"><div class="stat-num">9</div><div class="stat-label">Total Pages (Admin Dashboard)</div></div>
+    <div class="stat-block"><div class="stat-num">7</div><div class="stat-label">Total Pages (Restaurant Website)</div></div>
+  </div>
+
+  <div class="g2" style="margin-top:32px">
+    <div class="card red">
+      <h3>Real-Time Event Flow (Socket.io)</h3>
+      <ul class="arr">
+        <li>Customer places order → Server emits <code>new_order</code> event → Waiter app push + Admin dashboard live feed updates simultaneously</li>
+        <li>Customer taps "Call Waiter" → Server emits <code>bill_request</code> → Waiter push (with total) + Admin overview pending bills</li>
+        <li>Waiter marks settled → Server emits <code>table_settled</code> → Customer app shows "Thank You", Admin dashboard updates revenue counter + analytics, table becomes free on floor view</li>
+        <li>Admin toggles item unavailable → Server emits <code>menu_update</code> → Customer app live menu reflects change within seconds</li>
+        <li>Admin pushes discount → Server emits <code>discount_active</code> → Customer app banner appears immediately</li>
+      </ul>
+    </div>
+    <div class="card yellow">
+      <h3>Cross-App Shared Data</h3>
+      <ul class="arr">
+        <li><strong style="color:#fff">Restaurant config</strong> (name, logo, theme) → Admin Settings → Customer App (branding), Waiter App (restaurant name), Website (fetched via API)</li>
+        <li><strong style="color:#fff">Menu data</strong> → Admin Menu Management → Customer App (live menu), Website (E-03, ISR cached)</li>
+        <li><strong style="color:#fff">Table data</strong> → Admin Settings → Customer App (QR URLs), Waiter App (floor map)</li>
+        <li><strong style="color:#fff">Order data</strong> → Customer App → Waiter App (push) → Admin (analytics feed)</li>
+        <li><strong style="color:#fff">Profit scores</strong> → AI Engine (weekly) → Admin Dashboard (D-06) → Menu Management (D-03 badges)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="banner dark" style="margin-top:40px">Complete Cross-App Trigger Reference</div>
+  <div class="tw" style="margin-top:16px">
+    <table>
+      <thead><tr><th>Trigger (Source App)</th><th>Action</th><th>Target App(s)</th><th>Mechanism</th></tr></thead>
+      <tbody>
+        <tr><td>Customer scans QR (physical)</td><td>Opens Customer App, table identified</td><td>Customer App (B-01)</td><td>URL param encoding</td></tr>
+        <tr><td>Customer places order (B-04)</td><td>Waiter push alert + admin live feed</td><td>Waiter App (C-05) + Admin (D-02)</td><td>REST POST → Socket.io + FCM</td></tr>
+        <tr><td>Customer taps Call Waiter (B-06)</td><td>Waiter push alert with total</td><td>Waiter App (C-02 card highlights)</td><td>REST POST → FCM</td></tr>
+        <tr><td>Waiter marks settled (C-03)</td><td>Table freed, revenue updates, customer screen changes</td><td>Admin (D-02) + Customer App (B-06)</td><td>PATCH → Socket.io broadcast</td></tr>
+        <tr><td>Admin toggles item off (D-03)</td><td>Item greyed out on all active customer sessions</td><td>Customer App (all active sessions)</td><td>PATCH → Socket.io broadcast</td></tr>
+        <tr><td>Admin pushes discount (D-03)</td><td>Discount banner appears on customer menus</td><td>Customer App (B-02 banner)</td><td>POST → Socket.io event</td></tr>
+        <tr><td>AI engine runs (weekly cron)</td><td>Profit scores update, admin notified</td><td>Admin (D-06 + D-02 banner + D-03 badges)</td><td>Python cron → DB write → push notification to admin</td></tr>
+        <tr><td>Admin updates menu (D-03)</td><td>Website menu syncs</td><td>DMX Web (E-03)</td><td>ISR revalidation webhook</td></tr>
+        <tr><td>AMC expiry approaching (system)</td><td>Admin settings shows renewal alert</td><td>Admin (D-09)</td><td>Cron check → in-app banner</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout green" style="margin-top:40px">
+    Total Surfaces: 27 pages/screens across 4 products. Every screen has a defined purpose, linked entry point, and at least one outbound navigation path. No dead ends.
+    <small>This spec document is the single source of truth for all DMX UI/UX design and development work. All feature additions must update this document first.</small>
+  </div>
+
+</div>
+
+</div><!-- end .page -->
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="footer-brand">D<span>M</span>X</div>
+  <div class="footer-meta">
+    UI/UX PRD Addendum · Product Design Specification<br>
+    Version 1.0 · June 2026 · Confidential<br>
+    27 Screens · 4 Products · 1 Design System
+  </div>
+</footer>
+
+</body>
+</html>

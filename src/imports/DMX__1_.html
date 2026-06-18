@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DMX — The Restaurant Operating System</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--black:#000;--white:#fff;--accent:#FF4D00;--accent2:#FFD600;--green:#00C853;--s2:#111;--s3:#1A1A1A;--border:#2A2A2A;--muted:#666;--text:#E8E8E8}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--black);color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:15px;line-height:1.75}
+a{color:var(--accent);text-decoration:none}
+
+/* ---- COVER ---- */
+.cover{min-height:100vh;display:flex;flex-direction:column;justify-content:space-between;padding:56px;border-bottom:4px solid var(--accent);position:relative;overflow:hidden}
+.cover-watermark{position:absolute;font-size:380px;font-weight:700;color:#0A0A0A;bottom:-80px;right:-60px;line-height:1;user-select:none;letter-spacing:-30px;z-index:0}
+.cover-tag{display:inline-block;background:var(--accent);color:#fff;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:7px 16px;font-weight:700;position:relative;z-index:1}
+.cover h1{font-size:clamp(80px,12vw,160px);font-weight:700;letter-spacing:-6px;line-height:0.88;text-transform:uppercase;position:relative;z-index:1;margin-top:24px}
+.cover h1 .dot{color:var(--accent)}
+.cover-tagline{font-size:20px;font-weight:400;color:#888;margin-top:24px;max-width:560px;line-height:1.5;position:relative;z-index:1}
+.cover-tagline strong{color:var(--white)}
+.cover-meta{display:flex;gap:48px;position:relative;z-index:1;flex-wrap:wrap}
+.cmi .lbl{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted)}
+.cmi .val{font-size:13px;font-weight:600;color:var(--white);margin-top:3px}
+
+/* ---- PAGE ---- */
+.page{max-width:1140px;margin:0 auto;padding:88px 52px}
+@media(max-width:720px){.page{padding:40px 24px}.cover{padding:32px 24px}.cover h1{font-size:72px;letter-spacing:-3px}}
+
+/* ---- SECTIONS ---- */
+.sec{margin-bottom:96px}
+.sec-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.sec-title{font-size:clamp(30px,4vw,52px);font-weight:700;text-transform:uppercase;letter-spacing:-2px;line-height:1;border-left:5px solid var(--accent);padding-left:22px;margin-bottom:16px}
+.sec-sub{font-size:17px;color:#999;max-width:680px;margin-bottom:36px;line-height:1.6}
+hr.div{border:none;border-top:1px solid var(--border);margin:96px 0}
+
+/* ---- CALLOUT ---- */
+.callout{background:var(--s2);border-left:5px solid var(--accent);padding:28px 32px;margin:32px 0;font-size:20px;font-weight:600;color:var(--white);line-height:1.4}
+.callout.yellow{border-left-color:var(--accent2);color:var(--accent2)}
+.callout.green{border-left-color:var(--green);color:var(--green)}
+.callout small{display:block;font-size:13px;font-weight:400;color:var(--muted);margin-top:8px}
+
+/* ---- BANNER ---- */
+.banner{background:var(--accent);color:#fff;padding:22px 32px;font-size:19px;font-weight:700;text-transform:uppercase;letter-spacing:-0.5px;margin:36px 0}
+.banner.yellow{background:var(--accent2);color:#000}
+.banner.dark{background:var(--s3);color:#fff;border:2px solid #333}
+.banner.green{background:var(--green);color:#000}
+
+/* ---- CARDS ---- */
+.card{background:var(--s2);border:2px solid var(--border);padding:28px 32px;margin-bottom:16px}
+.card.red{box-shadow:6px 6px 0 var(--accent)}
+.card.yellow{box-shadow:6px 6px 0 var(--accent2)}
+.card.white{box-shadow:6px 6px 0 var(--white)}
+.card.green{box-shadow:6px 6px 0 var(--green)}
+.card h3{font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;color:var(--accent)}
+.card.yellow h3{color:var(--accent2)}.card.white h3{color:var(--white)}.card.green h3{color:var(--green)}
+.card p,.card li{color:#BBBBBB;font-size:14px;line-height:1.65}
+.card ul{padding-left:18px}.card li{margin-bottom:6px}
+
+/* ---- GRIDS ---- */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px}
+@media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+/* ---- STAT BLOCKS ---- */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:2px solid var(--border);margin:32px 0}
+.stat-block{padding:28px 24px;border-right:1px solid var(--border);text-align:center}
+.stat-block:last-child{border-right:none}
+.stat-num{font-size:44px;font-weight:700;letter-spacing:-3px;color:var(--accent);line-height:1}
+.stat-unit{font-size:18px;color:var(--accent)}
+.stat-label{font-size:12px;color:var(--muted);margin-top:8px;font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:0.5px}
+@media(max-width:720px){.stat-row{grid-template-columns:1fr 1fr}.stat-block{border-right:none;border-bottom:1px solid var(--border)}}
+
+/* ---- FLOW ---- */
+.flow{display:flex;flex-direction:column}
+.flow-step{display:flex;gap:24px;align-items:flex-start}
+.flow-left{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.flow-num{width:44px;height:44px;background:var(--accent);color:#fff;font-family:'Space Mono',monospace;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.flow-line{width:2px;flex:1;min-height:36px;background:var(--border);margin:4px 0}
+.flow-content{padding-bottom:36px;flex:1}
+.flow-content h4{font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--white);margin-bottom:8px}
+.flow-content p{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* ---- TABLE ---- */
+.tw{overflow-x:auto;margin-top:8px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:var(--s3);color:var(--white);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:13px 16px;text-align:left;border-bottom:2px solid var(--accent)}
+tbody td{padding:13px 16px;border-bottom:1px solid var(--border);color:#BBBBBB;vertical-align:top}
+tbody tr:hover{background:var(--s2)}
+
+/* ---- BADGES ---- */
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.badge{background:var(--s3);border:1px solid var(--border);color:var(--accent);font-family:'Space Mono',monospace;font-size:10px;padding:4px 10px;font-weight:700}
+.badge.y{color:var(--accent2);border-color:var(--accent2)}.badge.w{color:var(--white);border-color:#555}.badge.g{color:var(--green);border-color:var(--green)}
+
+/* ---- PILLARS ---- */
+.pillars{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;margin-top:24px;border:2px solid var(--border)}
+.pillar{padding:36px 28px;border-right:1px solid var(--border);text-align:center}
+.pillar:last-child{border-right:none}
+.pillar-num{font-size:72px;font-weight:700;color:var(--s3);line-height:1;margin-bottom:10px}
+.pillar h3{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--white);margin-bottom:10px}
+.pillar p{font-size:13px;color:var(--muted)}
+@media(max-width:720px){.pillars{grid-template-columns:1fr}.pillar{border-right:none;border-bottom:1px solid var(--border)}}
+
+/* ---- PRICING ---- */
+.pricing-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+@media(max-width:900px){.pricing-grid{grid-template-columns:1fr}}
+.plan{border:2px solid var(--border);padding:36px 28px;position:relative}
+.plan.featured{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.plan.gold{border-color:var(--accent2);box-shadow:0 0 0 1px var(--accent2)}
+.plan-badge{position:absolute;top:-2px;right:20px;background:var(--accent);color:#fff;font-family:'Space Mono',monospace;font-size:8px;padding:5px 12px;letter-spacing:2px;text-transform:uppercase;font-weight:700}
+.plan-badge.gold{background:var(--accent2);color:#000}
+.plan-tier{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.plan-price{font-size:42px;font-weight:700;letter-spacing:-2px;color:var(--white);line-height:1;margin-bottom:4px}
+.plan-price span{font-size:16px;font-weight:400;color:var(--muted)}
+.plan-amc{font-size:11px;color:var(--accent);font-family:'Space Mono',monospace;margin-bottom:6px;text-transform:uppercase}
+.plan-amc.gold{color:var(--accent2)}
+.plan-desc{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.5}
+.plan ul{padding-left:16px}.plan li{font-size:13px;color:#BBBBBB;margin-bottom:7px}
+
+/* ---- COMPARISON ---- */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:2px solid var(--border);margin:24px 0}
+.compare-col{padding:32px}
+.compare-col:first-child{border-right:1px solid var(--border)}
+.compare-col h3{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:20px}
+.compare-col.bad h3{color:#666}.compare-col.good h3{color:var(--accent)}
+.compare-item{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
+.ci-icon{font-size:16px;flex-shrink:0;margin-top:2px}
+.ci-text{font-size:13px;color:#BBBBBB;line-height:1.5}
+
+/* ---- ROI ---- */
+.roi-block{background:var(--s2);border:2px solid var(--accent);padding:40px;margin:32px 0}
+.roi-title{font-size:13px;font-family:'Space Mono',monospace;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:24px}
+.roi-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--border)}
+.roi-row:last-child{border-bottom:none;padding-top:24px}
+.roi-label{font-size:14px;color:#BBBBBB}
+.roi-val{font-size:18px;font-weight:700;color:var(--white);font-family:'Space Mono',monospace}
+.roi-val.green{color:var(--green)}.roi-val.accent{color:var(--accent2)}
+.roi-result{background:var(--green);color:#000;padding:24px 32px;font-size:22px;font-weight:700;text-transform:uppercase;letter-spacing:-0.5px;margin-top:24px}
+
+/* ---- WEB SECTION ---- */
+.web-banner{background:linear-gradient(135deg,#0A0A0A 0%,#111 100%);border:2px solid var(--accent2);padding:48px;margin:32px 0;position:relative;overflow:hidden}
+.web-banner::before{content:'WEB';position:absolute;font-size:200px;font-weight:700;color:#0F0F0F;right:-20px;top:-40px;line-height:1;letter-spacing:-10px}
+.web-banner .tag{display:inline-block;background:var(--accent2);color:#000;font-family:'Space Mono',monospace;font-size:9px;padding:6px 14px;letter-spacing:3px;text-transform:uppercase;font-weight:700;margin-bottom:20px}
+.web-banner h2{font-size:clamp(32px,5vw,60px);font-weight:700;letter-spacing:-2px;text-transform:uppercase;color:var(--white);line-height:1;margin-bottom:16px;position:relative;z-index:1}
+.web-banner h2 span{color:var(--accent2)}
+.web-banner p{font-size:16px;color:#999;max-width:540px;line-height:1.6;position:relative;z-index:1}
+
+/* ---- AI SEARCH ---- */
+.ai-chat{background:var(--s3);border:1px solid var(--border);padding:24px;margin:24px 0;font-family:'Space Mono',monospace;font-size:13px}
+.ai-q{color:var(--muted);margin-bottom:12px}
+.ai-q::before{content:'USER  ';color:#555;font-size:10px}
+.ai-a{color:var(--accent2)}
+.ai-a::before{content:'AI      ';color:var(--accent2);font-size:10px}
+.ai-highlight{background:rgba(255,214,0,0.15);color:var(--accent2);padding:2px 6px}
+
+/* ---- OBJECTIONS ---- */
+.objection{border:1px solid var(--border);margin-bottom:12px}
+.obj-q{padding:20px 24px;font-weight:600;color:var(--white);font-size:15px;cursor:default;border-bottom:1px solid var(--border);background:var(--s2)}
+.obj-q::before{content:'"';color:var(--accent);font-size:20px;margin-right:4px}
+.obj-a{padding:20px 24px;font-size:14px;color:#BBBBBB;line-height:1.65}
+
+/* ---- CTA ---- */
+.cta-block{background:var(--accent);padding:56px;text-align:center;margin-top:96px}
+.cta-block h2{font-size:clamp(32px,5vw,64px);font-weight:700;letter-spacing:-3px;text-transform:uppercase;color:#fff;line-height:1;margin-bottom:16px}
+.cta-block p{font-size:18px;color:rgba(255,255,255,0.75);max-width:480px;margin:0 auto 32px}
+.cta-btn{display:inline-block;background:#fff;color:#FF4D00;font-family:'Space Mono',monospace;font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;padding:18px 40px}
+
+/* ---- SCHEMA ---- */
+.schema{background:var(--s2);border:1px solid var(--border);padding:20px 24px;margin-bottom:12px;font-family:'Space Mono',monospace;font-size:12px}
+.schema-t{color:var(--accent2);font-size:12px;font-weight:700;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}
+.sf{color:#BBBBBB;margin-bottom:4px}
+.sf .fn{color:var(--accent)}.sf .ft{color:var(--accent2)}.sf .note{color:var(--muted);font-size:10px}
+
+/* ---- FOOTER ---- */
+footer{border-top:2px solid var(--border);padding:36px 52px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.footer-brand{font-size:28px;font-weight:700;letter-spacing:-2px;color:var(--white)}
+.footer-brand span{color:var(--accent)}
+.footer-meta{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);text-align:right;line-height:1.8}
+
+ul.arr li::marker{content:"→  ";color:var(--accent)}
+ul.tick li::marker{content:"✓  ";color:var(--green)}
+ul.cross li::marker{content:"✗  ";color:#555}
+</style>
+</head>
+<body>
+
+<!-- ===================== COVER ===================== -->
+<div class="cover">
+  <div class="cover-watermark">DMX</div>
+  <div><div class="cover-tag">Client Proposal · Confidential · 2026</div></div>
+  <div>
+    <h1>D<span class="dot">M</span>X</h1>
+    <p class="cover-tagline">The restaurant operating system that <strong>eliminates guesswork, recovers lost revenue,</strong> and turns your floor into a data-driven business.<br>Bought once. Owned forever.</p>
+  </div>
+  <div class="cover-meta">
+    <div class="cmi"><div class="lbl">Product</div><div class="val">DMX Restaurant OS</div></div>
+    <div class="cmi"><div class="lbl">Model</div><div class="val">One-Time License</div></div>
+    <div class="cmi"><div class="lbl">Market</div><div class="val">India — Restaurants &amp; Cafes</div></div>
+    <div class="cmi"><div class="lbl">Prepared For</div><div class="val">Restaurant Owner Meeting</div></div>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- ===================== HOOK ===================== -->
+<div class="sec">
+  <div class="sec-label">Before We Begin</div>
+  <div class="sec-title">The Number You've Never Calculated</div>
+
+  <div class="callout">
+    The average Indian restaurant running 60 tables a day, at ₹350 per order, is leaving <strong>₹7–12 lakhs on the table every year</strong> — not because the food is bad, but because they're operating blind.
+    <small>No data on which items lose money. No way to recover a missed order. No system. Just gut feel and hope.</small>
+  </div>
+
+  <p style="color:#999;max-width:720px;font-size:16px;line-height:1.7;margin-bottom:32px;">Every restaurant owner we've spoken to has the same story. Saturday night rush, three waiters running at full capacity — and still, orders get missed, bills get wrong, and a table of 6 left without ordering dessert because nobody came back to check on them. That's ₹600 gone. Multiply by 200 weekends a year.</p>
+
+  <div class="stat-row">
+    <div class="stat-block"><div class="stat-num">23<span class="stat-unit">%</span></div><div class="stat-label">of orders have errors in manual service</div></div>
+    <div class="stat-block"><div class="stat-num">₹8L<span class="stat-unit">+</span></div><div class="stat-label">avg revenue lost per year to inefficiency</div></div>
+    <div class="stat-block"><div class="stat-num">76<span class="stat-unit">%</span></div><div class="stat-label">customers research online before visiting</div></div>
+    <div class="stat-block"><div class="stat-num">0</div><div class="stat-label">restaurant owners who know their per-item profit</div></div>
+  </div>
+
+  <p style="color:#999;font-size:13px;margin-top:8px;font-style:italic;">Sources: National Restaurant Association of India (NRAI), Google/IPSOS Consumer Research, internal market surveys 2025</p>
+</div>
+
+<hr class="div">
+
+<!-- ===================== WHAT IS DMX ===================== -->
+<div class="sec">
+  <div class="sec-label">01 — The Product</div>
+  <div class="sec-title">What is DMX?</div>
+  <div class="sec-sub">DMX is a complete restaurant operating system — sold as a one-time package to your business. It is three things in one: a self-ordering system for your customers, a smart alert system for your staff, and a business intelligence engine for you as the owner.</div>
+
+  <div class="banner">One purchase. Three transformations. Zero monthly fees. No commissions. Ever.</div>
+
+  <div class="pillars">
+    <div class="pillar">
+      <div class="pillar-num" style="color:#1A1A1A">01</div>
+      <h3>Customer Interaction</h3>
+      <p>Every table gets a QR code. Customer scans it, browses your live menu, places their order — and taps one button when they want the bill. Your waiter gets buzzed instantly. Zero friction. Zero missed orders.</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num" style="color:#1A1A1A">02</div>
+      <h3>Finance Management</h3>
+      <p>Every bill automatically calculated. Every rupee tracked. GMV, revenue, profit per item — visible on your phone in real time. No more end-of-day Excel nightmares. No more billing disputes.</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num" style="color:#1A1A1A">03</div>
+      <h3>Sales Intelligence</h3>
+      <p>DMX tells you which items are making you money, which are quietly losing it, and what to do about it. Push a discount on a slow item. Remove a loss-maker. Watch your profit margin climb.</p>
+    </div>
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- ===================== THE BEFORE / AFTER ===================== -->
+<div class="sec">
+  <div class="sec-label">02 — The Transformation</div>
+  <div class="sec-title">Your Restaurant, Before and After</div>
+
+  <div class="compare-grid">
+    <div class="compare-col bad">
+      <h3>Without DMX — Today</h3>
+      <div class="compare-item"><div class="ci-icon">😰</div><div class="ci-text">Waiter takes verbal order, sometimes mishears or forgets. Customer gets wrong dish. Dispute at bill time.</div></div>
+      <div class="compare-item"><div class="ci-icon">📋</div><div class="ci-text">Paper menu costs ₹8,000–15,000 per reprint. Price changes take days. "Sold out" requires someone to walk to every table.</div></div>
+      <div class="compare-item"><div class="ci-icon">🙋</div><div class="ci-text">Customer waves to call waiter for bill. Waiter is busy. Table waits 15 minutes. They leave annoyed.</div></div>
+      <div class="compare-item"><div class="ci-icon">❓</div><div class="ci-text">Owner reviews daily sales at night with pen and paper. No idea which item has the best margin. Gut-feel menu decisions.</div></div>
+      <div class="compare-item"><div class="ci-icon">📉</div><div class="ci-text">A menu item costs more to make than it sells for. Owner doesn't know. It's been on the menu for 2 years.</div></div>
+      <div class="compare-item"><div class="ci-icon">🌐</div><div class="ci-text">Restaurant has no website. When someone searches "cafe near me" or asks ChatGPT, you don't exist.</div></div>
+    </div>
+    <div class="compare-col good">
+      <h3>With DMX — After</h3>
+      <div class="compare-item"><div class="ci-icon" style="color:var(--green)">✓</div><div class="ci-text">Customer orders from their phone at the table. Order appears on waiter's app immediately. Zero miscommunication, zero errors.</div></div>
+      <div class="compare-item"><div class="ci-icon" style="color:var(--green)">✓</div><div class="ci-text">Menu updates in seconds from your phone. Change a price, mark an item sold out, add today's special — all live instantly on every table.</div></div>
+      <div class="compare-item"><div class="ci-icon" style="color:var(--green)">✓</div><div class="ci-text">Customer taps "Call Waiter." Waiter's phone buzzes in under a second with the table number and exact total. They arrive prepared.</div></div>
+      <div class="compare-item"><div class="ci-icon" style="color:var(--green)">✓</div><div class="ci-text">Your dashboard shows live GMV, hourly revenue, best sellers, worst sellers, and profit per item. Updated with every settled bill.</div></div>
+      <div class="compare-item"><div class="ci-icon" style="color:var(--green)">✓</div><div class="ci-text">DMX flags loss-making items weekly. You remove them or raise the price. Your average margin goes up without serving a single extra customer.</div></div>
+      <div class="compare-item"><div class="ci-icon" style="color:var(--green)">✓</div><div class="ci-text">Your restaurant has a professional website. You rank on Google. ChatGPT and AI search engines recommend you. Customers find you before your competitor.</div></div>
+    </div>
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- ===================== HOW IT WORKS ===================== -->
+<div class="sec">
+  <div class="sec-label">03 — The System</div>
+  <div class="sec-title">How DMX Works</div>
+  <div class="sec-sub">No complex setup. No hardware beyond a basic Android phone for your waiter. No change to how your kitchen runs. DMX plugs into your existing workflow and makes it better.</div>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="flow-left"><div class="flow-num">01</div><div class="flow-line"></div></div>
+      <div class="flow-content">
+        <h4>Customer Scans QR at Their Table</h4>
+        <p>A unique QR sticker sits on every table. Customer scans it with any phone — no app download, no login required. Your digital menu opens instantly in their browser. The table is automatically identified.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-left"><div class="flow-num">02</div><div class="flow-line"></div></div>
+      <div class="flow-content">
+        <h4>They Browse, Add to Cart, and Place Order</h4>
+        <p>The menu shows live stock status, item descriptions, dietary tags, and any active discounts. Customer adds items to cart, adds special notes ("no onion", "extra spicy"), and places the order. The running bill is visible throughout.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-left"><div class="flow-num">03</div><div class="flow-line"></div></div>
+      <div class="flow-content">
+        <h4>Your Waiter Gets Buzzed Instantly</h4>
+        <p>The moment the order is placed, your waiter's app gets a push notification — even if the phone is in their pocket. The notification shows the table number, item count, and a quick preview. Waiter taps to see the full order and heads to the kitchen as they always do. Your kitchen workflow stays exactly the same.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-left"><div class="flow-num">04</div><div class="flow-line"></div></div>
+      <div class="flow-content">
+        <h4>Food Served. More Orders Can Come In.</h4>
+        <p>The customer can order more rounds throughout the session — each new order fires a fresh notification to the waiter. All items get added to one running bill for the table. No paperwork, no re-adding.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-left"><div class="flow-num">05</div><div class="flow-line"></div></div>
+      <div class="flow-content">
+        <h4>Bill Request — One Tap or Just Call Out</h4>
+        <p>When the customer is done, they either tap the "Call Waiter" button in the app — or they just wave as usual. Both work. If they tap, your waiter gets an instant buzz notification showing the table number and the exact total already calculated. Waiter arrives prepared. No fumbling with a calculator.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-left"><div class="flow-num">06</div><div class="flow-line"></div></div>
+      <div class="flow-content">
+        <h4>Payment Collected — Your Way</h4>
+        <p>Cash, UPI, card — whatever your restaurant uses. Waiter collects as normal, marks the table as settled on the app. The table is freed. Your dashboard updates in real time. That transaction's data feeds your analytics engine immediately.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-left"><div class="flow-num">07</div></div>
+      <div class="flow-content">
+        <h4>Your Business Intelligence Updates</h4>
+        <p>Every settled bill enriches your analytics. Which item sold the most today? Which table took the longest? What was your peak hour? What's your profit per dish? Your admin dashboard has the answer, updated after every single transaction.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- ===================== FEATURES ===================== -->
+<div class="sec">
+  <div class="sec-label">04 — What You Get</div>
+  <div class="sec-title">Every Component, Explained</div>
+
+  <div class="banner">Module A — Customer Menu App (QR-Based Web App)</div>
+  <div class="g2" style="margin-bottom:32px">
+    <div class="card red">
+      <h3>QR Table System</h3>
+      <ul class="arr">
+        <li>Unique QR printed for each table — encodes your restaurant + table number</li>
+        <li>Customer scans → web app opens in their browser. Zero app download, zero login.</li>
+        <li>Session automatically tied to the correct table. Orders go to the right place.</li>
+        <li>Reprinted from your admin panel in seconds if a QR gets damaged</li>
+        <li>No physical menus needed. Ever again.</li>
+      </ul>
+    </div>
+    <div class="card yellow">
+      <h3>Live Menu with Intelligence</h3>
+      <ul class="arr">
+        <li>Category-based menu with filters (veg/non-veg/popular)</li>
+        <li>Sold-out items shown as greyed out in real time — no customer frustration</li>
+        <li>Active discounts shown inline — customers see the deal right there</li>
+        <li>AI recommendation tags: "Most Ordered", "Chef's Pick", "Worth It"</li>
+        <li>Photos, descriptions, dietary tags — your items, looking their best</li>
+      </ul>
+    </div>
+    <div class="card white">
+      <h3>Cart, Ordering, and Notes</h3>
+      <ul class="arr">
+        <li>Cart stays intact even if customer accidentally closes their browser</li>
+        <li>Per-item notes: "less spicy", "no garlic", "extra sauce"</li>
+        <li>Multiple rounds in one session — all added to the same running bill</li>
+        <li>Confirmation screen shows items + estimated total before confirming</li>
+      </ul>
+    </div>
+    <div class="card green">
+      <h3>Live Bill + Call Waiter</h3>
+      <ul class="arr">
+        <li>Running bill visible at all times — GST and service charge auto-applied</li>
+        <li>"Call Waiter" button → waiter's phone buzzes within 300ms</li>
+        <li>Waiter arrives knowing the table number and exact total already</li>
+        <li>Payment collected offline — cash, UPI, card. Your choice. No forced gateway.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="banner yellow">Module B — Waiter App (Offline-Capable Mobile App)</div>
+  <div class="g2" style="margin-bottom:32px">
+    <div class="card yellow">
+      <h3>Instant Order Alerts</h3>
+      <ul class="arr">
+        <li>Push notification fires the moment any table places an order</li>
+        <li>Shows: Table number, items count, preview — all in the notification itself</li>
+        <li>Works offline — alerts queue up and sync when connection is back</li>
+        <li>Waiter accepts the order and handles kitchen communication as usual (verbal, chit — your existing process unchanged)</li>
+      </ul>
+    </div>
+    <div class="card red">
+      <h3>Bill Request Buzz</h3>
+      <ul class="arr">
+        <li>"Call Waiter" tap → instant push notification to waiter's app</li>
+        <li>Shows table number + running total — waiter arrives knowing everything</li>
+        <li>Table marked "settled" after payment → immediately shown as free in floor view</li>
+      </ul>
+    </div>
+    <div class="card white">
+      <h3>Floor View</h3>
+      <ul class="arr">
+        <li>Live map of all tables: Free / Occupied / Bill Requested</li>
+        <li>Running total visible per table at a glance</li>
+        <li>Tables waiting too long are flagged automatically</li>
+        <li>Waiter can add items to existing table order if customer asks verbally</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Works on Any Android</h3>
+      <ul class="arr">
+        <li>No fancy hardware needed — runs on any basic Android phone</li>
+        <li>If the restaurant wifi goes down, the app still queues alerts via mobile data</li>
+        <li>Simple, large-text UI designed for fast-moving restaurant environments</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="banner dark">Module C — Admin Dashboard (Owner / Manager)</div>
+  <div class="g2" style="margin-bottom:32px">
+    <div class="card red">
+      <h3>Live Operations View</h3>
+      <ul class="arr">
+        <li>Real-time order feed across all tables</li>
+        <li>Active tables, orders/hour, average order value — live tickers</li>
+        <li>Revenue counter that updates with every settled bill</li>
+        <li>Staff log: which waiter handled which table, response times</li>
+      </ul>
+    </div>
+    <div class="card yellow">
+      <h3>Sales Analytics</h3>
+      <ul class="arr">
+        <li>GMV, revenue, profit — per day / week / month / custom date range</li>
+        <li>Best-selling items by volume and by revenue</li>
+        <li>Worst-performing and loss-making items flagged in red</li>
+        <li>Peak hours heatmap — know exactly when you need more staff</li>
+        <li>Table turnover time: how long from first order to settled</li>
+        <li>Discount effectiveness: did the promo actually move units?</li>
+      </ul>
+    </div>
+    <div class="card white">
+      <h3>Menu Management</h3>
+      <ul class="arr">
+        <li>Add, edit, remove items and categories — changes go live in seconds</li>
+        <li>Toggle stock availability — instantly shows "unavailable" on all customer screens</li>
+        <li>Upload photos, set dietary flags, write descriptions from your phone</li>
+        <li>Schedule menu variants (lunch menu vs dinner menu — auto-switches)</li>
+        <li>Push time-limited discounts with auto-expiry on any item</li>
+      </ul>
+    </div>
+    <div class="card green">
+      <h3>Profit Maximization Engine</h3>
+      <ul class="arr">
+        <li>Weekly AI re-score of every menu item across 4 categories</li>
+        <li><strong style="color:#fff">STAR</strong> — High sales + high margin: protect and feature</li>
+        <li><strong style="color:#fff">PUZZLE</strong> — High sales + low margin: raise price or cut cost</li>
+        <li><strong style="color:#fff">SLEEPER</strong> — Low sales + high margin: push a discount to activate</li>
+        <li><strong style="color:#fff">DEAD WEIGHT</strong> — Low sales + low margin: remove it. It's hurting you.</li>
+        <li>Weekly insight notification with specific actions to take</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="banner yellow">Module D — Billing and Finance</div>
+  <div class="g2">
+    <div class="card yellow">
+      <h3>Auto-Computed Bills</h3>
+      <ul class="arr">
+        <li>Bill calculated automatically from every order item — no manual entry, zero errors</li>
+        <li>GST and service charge configured once, applied forever automatically</li>
+        <li>Bill visible live to customer and waiter simultaneously</li>
+        <li>Print-ready format for physical receipt if your restaurant needs it</li>
+        <li>Optional: WhatsApp / email bill delivery to customer</li>
+      </ul>
+    </div>
+    <div class="card red">
+      <h3>Payment Recording</h3>
+      <ul class="arr">
+        <li>Waiter collects payment offline — cash, UPI, card. Their choice stays.</li>
+        <li>Marks payment method and confirms settlement on the app</li>
+        <li>All settled bills auto-populate your daily finance report</li>
+        <li>Day-end report generated automatically — no manual reconciliation</li>
+        <li>Optional Razorpay integration available for restaurants that want online payment</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- ===================== ROI ===================== -->
+<div class="sec">
+  <div class="sec-label">05 — The Math</div>
+  <div class="sec-title">Return on Investment</div>
+  <div class="sec-sub">Let's be conservative. Here's the math for a mid-sized restaurant running 60 tables a day.</div>
+
+  <div class="roi-block">
+    <div class="roi-title">DMX ROI Calculator — Conservative Estimate</div>
+    <div class="roi-row">
+      <div class="roi-label">Tables served per day</div>
+      <div class="roi-val">60</div>
+    </div>
+    <div class="roi-row">
+      <div class="roi-label">Average order value</div>
+      <div class="roi-val">₹380</div>
+    </div>
+    <div class="roi-row">
+      <div class="roi-label">Increase in avg order value with self-ordering (research: 12–20% uplift when customers browse freely, no social pressure from waiter)</div>
+      <div class="roi-val green">+12%</div>
+    </div>
+    <div class="roi-row">
+      <div class="roi-label">Extra revenue per day from order value lift alone</div>
+      <div class="roi-val accent">₹2,736 / day</div>
+    </div>
+    <div class="roi-row">
+      <div class="roi-label">Extra revenue per month (26 operating days)</div>
+      <div class="roi-val accent">₹71,136 / month</div>
+    </div>
+    <div class="roi-row">
+      <div class="roi-label">Savings from eliminating menu reprints</div>
+      <div class="roi-val green">₹12,000 / year</div>
+    </div>
+    <div class="roi-row">
+      <div class="roi-label">Savings from catching and removing 3 loss-making items (conservative)</div>
+      <div class="roi-val green">₹40,000 / year</div>
+    </div>
+    <div class="roi-row">
+      <div class="roi-label">Total annual revenue and savings impact</div>
+      <div class="roi-val" style="color:var(--accent2);font-size:24px">₹9.1L / year</div>
+    </div>
+    <div class="roi-row" style="border:none">
+      <div class="roi-label">DMX one-time investment (mid-tier restaurant)</div>
+      <div class="roi-val" style="color:#666">₹55,000</div>
+    </div>
+    <div class="roi-result">DMX pays for itself in under 3 weeks. Every rupee after that is pure gain.</div>
+  </div>
+
+  <p style="color:#666;font-size:12px;margin-top:12px;font-style:italic;">*Order value uplift data based on published research by Oracle Food &amp; Beverage, Toast POS, and National Restaurant Association studies on self-ordering systems. Results vary by restaurant type and menu structure.</p>
+</div>
+
+<hr class="div">
+
+<!-- ===================== DMX WEB ===================== -->
+<div class="sec">
+  <div class="sec-label">06 — Add-On Package</div>
+
+  <div class="web-banner">
+    <div class="tag">Separate Add-On · ₹30,000 One-Time</div>
+    <h2>DMX <span>Web</span></h2>
+    <p>A professional, fast-loading, SEO-optimised website for your restaurant — built to get you found on Google, recommended by AI, and trusted by customers before they even walk through your door.</p>
+  </div>
+
+  <div class="callout yellow">
+    76% of customers research a restaurant online before visiting. If your restaurant has no website — or a bad one — you've already lost them to the place next door that does.
+    <small>Google/IPSOS Restaurant Discovery Study, 2024</small>
+  </div>
+
+  <h3 style="font-size:22px;font-weight:700;text-transform:uppercase;letter-spacing:-0.5px;color:#fff;margin:36px 0 20px;border-left:4px solid var(--accent2);padding-left:16px">The AI Search Revolution — And Why Your Restaurant Needs to Be In It</h3>
+
+  <p style="color:#999;font-size:15px;line-height:1.7;max-width:780px;margin-bottom:24px">In 2026, people don't just Google things. They ask ChatGPT, Perplexity, Google AI Overview, and voice assistants. When someone says <em>"What's a good place for dinner in Hyderabad tonight?"</em> — these AI systems scan the internet and recommend the restaurants that have a strong, structured digital presence. No website means no recommendation. Simple.</p>
+
+  <div class="ai-chat">
+    <div class="ai-q">Show me the best family-friendly restaurants in Banjara Hills, Hyderabad</div>
+    <br>
+    <div class="ai-a">Here are some well-regarded options in Banjara Hills based on online presence and reviews:<br><br>
+    1. <span class="ai-highlight">YOUR RESTAURANT NAME</span> — known for its authentic menu and easy digital ordering via QR. Highly reviewed.<br>
+    2. Competitor Cafe — popular for brunch...<br>
+    3. Another Place — ...</div>
+  </div>
+  <p style="color:#555;font-size:12px;font-style:italic;margin-top:8px">This is what your restaurant's digital presence can look like. AI systems cite restaurants with structured websites, proper schema markup, and consistent online presence. Without it — you don't exist in AI search.</p>
+
+  <div class="g2" style="margin-top:32px">
+    <div class="card yellow">
+      <h3>What DMX Web Includes</h3>
+      <ul class="tick">
+        <li>Full restaurant website (5–8 pages): Home, Menu, About, Gallery, Contact, Reservations</li>
+        <li>Mobile-first, fast-loading (Core Web Vitals optimized — Google ranking factor)</li>
+        <li>Google Business Profile setup and optimization</li>
+        <li>Restaurant schema markup — tells Google exactly what your business is</li>
+        <li>Online menu displayed on website (synced with DMX menu)</li>
+        <li>WhatsApp reservation button with click-to-chat</li>
+        <li>Google Maps embed + directions</li>
+        <li>Photo gallery with optimized images</li>
+        <li>Social media link integration (Instagram, Facebook)</li>
+        <li>SSL certificate + custom domain setup</li>
+        <li>1 year of free hosting included</li>
+      </ul>
+    </div>
+    <div class="card red">
+      <h3>SEO + AI Search Optimization</h3>
+      <ul class="arr">
+        <li><strong style="color:#fff">Local SEO</strong> — "restaurant near me", "cafe in [your area]" searches. You rank above competitors with no website.</li>
+        <li><strong style="color:#fff">GEO (Generative Engine Optimization)</strong> — structured data and content that AI systems like ChatGPT, Perplexity, and Google AI read and cite.</li>
+        <li><strong style="color:#fff">Menu indexed by Google</strong> — your dishes appear in search results. Someone searching "mutton biryani in [city]" can find YOUR restaurant specifically.</li>
+        <li><strong style="color:#fff">Review schema</strong> — your Google ratings displayed directly in search results with stars, increasing click-through rate by 35%.</li>
+        <li><strong style="color:#fff">Speed optimization</strong> — loads in under 1.5 seconds. Google penalizes slow sites. We build fast.</li>
+        <li><strong style="color:#fff">Long-term compound benefit</strong> — every month your site is live, its SEO authority grows. Year 2 you rank for more searches than year 1. This compounds forever.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout green" style="margin-top:24px">
+    A ₹30,000 website that brings in 5 new tables a week = ₹7,800/week in new revenue at ₹390 avg order. That's ₹4L+ per year from a one-time spend.
+    <small>New customer acquisition through digital discovery — the highest-ROI marketing channel for restaurants in 2025-26.</small>
+  </div>
+
+  <div class="g3" style="margin-top:32px">
+    <div class="card">
+      <h3>Google Maps Domination</h3>
+      <p>Proper Google Business Profile setup means you show up in the "Local Pack" — the 3 results that appear on Google Maps for "restaurant near me." 46% of all Google searches are local. If you're not in that pack, you're invisible to half your potential customers.</p>
+    </div>
+    <div class="card yellow">
+      <h3>ChatGPT &amp; AI Recommendations</h3>
+      <p>AI search engines now account for a growing share of restaurant discovery, especially among younger, urban customers. They cite businesses with structured web presence — proper schema, clear content, consistent NAP (name, address, phone) across the internet. DMX Web sets all of this up for you.</p>
+    </div>
+    <div class="card white">
+      <h3>Your Competitors Are Doing This</h3>
+      <p>Independent restaurants that invested in digital presence in 2023–24 are now seeing 15–25% of their new customers come from online discovery. The ones who didn't are not seeing any growth in new customers. The gap is widening every month.</p>
+    </div>
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- ===================== INVESTMENT ===================== -->
+<div class="sec">
+  <div class="sec-label">07 — Your Investment</div>
+  <div class="sec-title">Pricing — Own It Forever</div>
+  <div class="sec-sub">DMX is not a subscription. You pay once. You own the system. Your data stays yours. No monthly fees, no per-order commissions, no platform dependency. Ever.</div>
+
+  <div class="pricing-grid">
+    <div class="plan">
+      <div class="plan-tier">Starter</div>
+      <div class="plan-price">₹25,000<span> one-time</span></div>
+      <div class="plan-amc">+ ₹5,000 / year AMC (optional)</div>
+      <div class="plan-desc">Best for small cafes and kiosks. Up to 20 tables, 2 waiter devices.</div>
+      <ul class="arr">
+        <li>Customer QR Ordering App</li>
+        <li>Waiter Alert App (2 devices)</li>
+        <li>Admin Dashboard</li>
+        <li>Live menu management</li>
+        <li>Auto-computed billing</li>
+        <li>Basic sales reports</li>
+        <li>QR generation for all tables</li>
+        <li>3 months setup support</li>
+      </ul>
+    </div>
+
+    <div class="plan featured">
+      <div class="plan-badge">Most Popular</div>
+      <div class="plan-tier">Restaurant</div>
+      <div class="plan-price">₹55,000<span> one-time</span></div>
+      <div class="plan-amc">+ ₹10,000 / year AMC (optional)</div>
+      <div class="plan-desc">The full system for restaurants running up to 60 tables. Unlimited waiter devices.</div>
+      <ul class="arr">
+        <li>Everything in Starter</li>
+        <li>Unlimited waiter devices</li>
+        <li>Profit Maximization AI Engine</li>
+        <li>Full analytics dashboard (GMV, profit, peak hours)</li>
+        <li>Dynamic discount push to customer menus</li>
+        <li>Menu scheduling (lunch / dinner auto-switch)</li>
+        <li>WhatsApp bill delivery</li>
+        <li>6 months setup + training support</li>
+      </ul>
+    </div>
+
+    <div class="plan gold">
+      <div class="plan-badge gold">Premium</div>
+      <div class="plan-tier">Enterprise</div>
+      <div class="plan-price">₹1,00,000+<span> one-time</span></div>
+      <div class="plan-amc gold">+ ₹20,000 / year AMC (included Year 1)</div>
+      <div class="plan-desc">Large venues, multi-section layouts, high volume. Built and priced per your exact need.</div>
+      <ul class="arr">
+        <li>Everything in Restaurant</li>
+        <li>Custom-branded customer app</li>
+        <li>Multi-section floor management</li>
+        <li>Dedicated setup engineer on-site</li>
+        <li>Full staff training included</li>
+        <li>Priority support SLA</li>
+        <li>1 year AMC included</li>
+        <li>Future feature priority</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card yellow" style="margin-top:24px">
+    <h3>DMX Web Add-On — Website + SEO + AI Search Optimization</h3>
+    <p style="font-size:26px;font-weight:700;letter-spacing:-1px;color:var(--accent2);margin:12px 0 8px">₹30,000 <span style="font-size:16px;font-weight:400;color:#888">one-time · 1 year hosting included</span></p>
+    <p style="color:#888;font-size:13px;margin-bottom:16px">Recommended add-on for any restaurant that doesn't have a website or has an outdated one. Includes everything in the DMX Web section above — full site, Google Business setup, schema markup, local SEO, and GEO optimization.</p>
+    <ul class="tick">
+      <li>Professional 5–8 page restaurant website</li>
+      <li>Google Business Profile optimized</li>
+      <li>AI search (ChatGPT, Perplexity) structured data markup</li>
+      <li>Menu indexed by Google</li>
+      <li>1 year free hosting + SSL</li>
+    </ul>
+  </div>
+
+  <div class="banner green" style="margin-top:32px">Bundle: Restaurant Tier + DMX Web = ₹80,000. Save ₹5,000. Recommended for most clients.</div>
+
+  <div class="g3" style="margin-top:32px">
+    <div class="card">
+      <h3>Setup and Onboarding Fee</h3>
+      <p style="color:#BBBBBB;font-size:14px">Charged once at project start. Covers menu upload, QR printing for all tables, staff training session (1–2 hours), and system go-live support.</p>
+      <p style="color:var(--accent);font-weight:700;font-size:20px;margin-top:12px">₹5,000 – ₹15,000</p>
+      <p style="color:#666;font-size:12px">Based on restaurant size and complexity</p>
+    </div>
+    <div class="card yellow">
+      <h3>Annual Maintenance Contract</h3>
+      <p style="color:#BBBBBB;font-size:14px">Optional yearly contract covering bug fixes, software updates, new features added to DMX, and technical support. Most clients take it — it's ₹833/month for peace of mind.</p>
+      <p style="color:var(--accent2);font-weight:700;font-size:20px;margin-top:12px">₹5,000 – ₹20,000 / year</p>
+      <p style="color:#666;font-size:12px">Based on tier</p>
+    </div>
+    <div class="card white">
+      <h3>Hardware (Optional)</h3>
+      <p style="color:#BBBBBB;font-size:14px">We can supply branded QR table stands for a polished look, and a dedicated Android device for the waiter app if the restaurant doesn't have one.</p>
+      <p style="color:var(--white);font-weight:700;font-size:20px;margin-top:12px">₹149/table stand</p>
+      <p style="color:#666;font-size:12px">Waiter device quoted separately</p>
+    </div>
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- ===================== COMPETITIVE ===================== -->
+<div class="sec">
+  <div class="sec-label">08 — The Landscape</div>
+  <div class="sec-title">Why Not the Others?</div>
+
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Option</th><th>Cost Model</th><th>The Hidden Problem</th><th>DMX Advantage</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:#fff">Petpooja / UrbanPiper</strong></td>
+          <td>₹2,000–5,000/month SaaS</td>
+          <td>You pay ₹60,000/year minimum. Forever. No QR self-ordering. No profit AI. Complex setup needs their support constantly.</td>
+          <td>One-time ₹55K. You own it. With profit intelligence they don't have.</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#fff">Dotpe</strong></td>
+          <td>"Free" + commission per order</td>
+          <td>At ₹380 avg order × 60 tables/day × 2% commission = ₹1,66,000 taken from you per year. Silently. Every year.</td>
+          <td>Zero commission. Ever. On 60 tables/day you save ₹1.66L annually vs Dotpe.</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#fff">Zomato / Swiggy Dine-In</strong></td>
+          <td>Platform commission + data ownership</td>
+          <td>Your customer data belongs to Zomato. They use it to retarget your own customers to other restaurants. You're building their database, not yours.</td>
+          <td>DMX: Your data. Your customers. Your relationship. No platform middleman.</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#fff">Hire a Custom Developer</strong></td>
+          <td>₹2–5L build cost</td>
+          <td>You get a one-off build. No maintenance. No updates. No profit engine. When something breaks, your developer may not be available. And you're starting from scratch.</td>
+          <td>Full system for ₹55K. Includes AMC. Built on proven architecture. Updated and maintained.</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#fff">Square / Toast (US Products)</strong></td>
+          <td>$60–165/month</td>
+          <td>Not built for India. No UPI, no Razorpay, no GST compliance, pricing in dollars, support in US timezone. A pain at every step.</td>
+          <td>DMX is India-native. UPI, Razorpay, GST, rupee pricing, Indian support.</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#fff">Do Nothing</strong></td>
+          <td>₹0 upfront</td>
+          <td>The status quo is not free. It's costing you ₹8–12L per year in inefficiency, missed orders, and zero business intelligence. Every month you wait is money left behind.</td>
+          <td>DMX pays for itself in under 3 weeks. The cost of doing nothing is higher than the cost of DMX.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="banner" style="margin-top:32px">DMX is the only India-built system combining QR ordering + smart waiter alerts + profit AI at a one-time price. No commissions. No subscriptions. No platform dependency.</div>
+</div>
+
+<hr class="div">
+
+<!-- ===================== OBJECTIONS ===================== -->
+<div class="sec">
+  <div class="sec-label">09 — Common Questions</div>
+  <div class="sec-title">We've Heard Every Concern</div>
+
+  <div class="objection">
+    <div class="obj-q">Will my older customers be able to use a QR menu? They're not tech-savvy.</div>
+    <div class="obj-a">Your waiter can still take the order the traditional way for any customer who prefers it. DMX doesn't remove the human element — it enhances it. For the majority of your customers who do use it, it means faster service and fewer errors. The QR menu works on every smartphone, including basic Android phones, with no download or login. If a customer can send a WhatsApp, they can use DMX.</div>
+  </div>
+
+  <div class="objection">
+    <div class="obj-q">What if the internet goes down? My restaurant can't stop working.</div>
+    <div class="obj-a">The waiter app is built with offline capability — it queues notifications and syncs when the connection is restored. Your wifi going down does not shut down your restaurant. We also recommend pairing DMX with a basic mobile data SIM in the waiter device as a fallback. Additionally, waiters can always revert to taking orders manually for the duration of an outage — DMX is an enhancer, not a dependency.</div>
+  </div>
+
+  <div class="objection">
+    <div class="obj-q">We already have a system / POS. Why switch?</div>
+    <div class="obj-a">DMX is not a competitor to your existing POS — it's what sits on top of it. If you have a POS for billing, DMX handles the customer-facing ordering and gives you the analytics layer. Many restaurants use both. That said, DMX's billing module can replace a basic POS entirely for most restaurant types. We assess your current setup before recommending.</div>
+  </div>
+
+  <div class="objection">
+    <div class="obj-q">My staff will resist learning a new system.</div>
+    <div class="obj-a">The waiter app has exactly two actions: view the new order, and mark the table as settled. That's it. Training takes under 30 minutes. The customer app requires no training — customers figure it out on their own in under 60 seconds, the same way they figure out any other app. The admin dashboard is slightly more involved, but we walk you through it personally during onboarding.</div>
+  </div>
+
+  <div class="objection">
+    <div class="obj-q">₹55,000 is a big investment for a small restaurant.</div>
+    <div class="obj-a">We understand. Here's how to think about it: at 60 tables/day with ₹380 average order, a conservative 12% order value lift from self-ordering generates ₹2,700 extra per day. DMX pays for itself in 20 days. After that, every day you run DMX is pure gain. Also: Starter tier at ₹25,000 is available for smaller venues. And financing can be arranged — we can discuss spreading the cost over 3–6 months for the right partner.</div>
+  </div>
+
+  <div class="objection">
+    <div class="obj-q">What happens after I buy? Will you just disappear?</div>
+    <div class="obj-a">We don't do hit-and-run implementations. Every client gets a dedicated onboarding session (in person or video call), full menu setup assistance, staff training, and 3–6 months of active support included in the package. The Annual Maintenance Contract keeps us accountable beyond that — we keep your system updated, fix any bugs, and are reachable when you need us. Our business model depends on you referring other restaurant owners to us. We have every incentive to keep you happy.</div>
+  </div>
+
+  <div class="objection">
+    <div class="obj-q">Do I need a website? I get enough customers through word of mouth.</div>
+    <div class="obj-a">Word of mouth is powerful — but it has a ceiling. A website compounds indefinitely. Every month your site exists, it gains more authority in Google, more menu items get indexed, more reviews accumulate. Customers searching online for your cuisine in your area find you instead of your competitor. AI systems like ChatGPT start recommending you by name when asked for restaurant suggestions in your city. The ₹30,000 website investment has compounding returns that no other marketing spend can match. If you're already doing well, imagine what another 5 tables per week from digital discovery looks like over 5 years.</div>
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- ===================== AFTER YES ===================== -->
+<div class="sec">
+  <div class="sec-label">10 — What Happens Next</div>
+  <div class="sec-title">After You Say Yes</div>
+  <div class="sec-sub">From agreement to live system — typically 7–14 days depending on restaurant size.</div>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="flow-left"><div class="flow-num" style="background:var(--accent2);color:#000">01</div><div class="flow-line"></div></div>
+      <div class="flow-content">
+        <h4>Day 1–2: Agreement and Menu Collection</h4>
+        <p>We sign the agreement, collect your menu (photos, items, prices, categories), table count, and any customization preferences. You share access to your restaurant info. We start building.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-left"><div class="flow-num" style="background:var(--accent2);color:#000">02</div><div class="flow-line"></div></div>
+      <div class="flow-content">
+        <h4>Day 3–7: System Setup and Configuration</h4>
+        <p>We configure the system for your restaurant — your menu uploaded, pricing set, GST configured, QR codes generated for all your tables. We set up your admin dashboard with your branding. Waiter app installed on your device(s).</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-left"><div class="flow-num" style="background:var(--accent2);color:#000">03</div><div class="flow-line"></div></div>
+      <div class="flow-content">
+        <h4>Day 7–10: Training and Soft Launch</h4>
+        <p>We walk through the system with you and your staff in person or via video call. Staff training on the waiter app (under 30 minutes). We run a test order from start to finish. You go live with tables.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-left"><div class="flow-num" style="background:var(--accent2);color:#000">04</div><div class="flow-line"></div></div>
+      <div class="flow-content">
+        <h4>Day 10–14: Full Go-Live + First Week Support</h4>
+        <p>Full system active. We're on standby for the first week to fix any issues that come up. You start seeing real order data flow through the dashboard. Your first weekly profit maximization report generates at the 7-day mark.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-left"><div class="flow-num" style="background:var(--green);color:#000">✓</div></div>
+      <div class="flow-content">
+        <h4>Month 1+: Your Restaurant, Transformed</h4>
+        <p>You have a complete data picture of your business. You know which items make money. Your waiter never misses an order or a bill request. Your customers order faster and spend more. And if you added DMX Web, new customers are finding you online every day.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- ===================== TECH ===================== -->
+<div class="sec">
+  <div class="sec-label">11 — Under the Hood</div>
+  <div class="sec-title">Technology Stack</div>
+  <div class="sec-sub">For technically-inclined clients. What DMX is actually built on — and why every choice was made deliberately.</div>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Layer</th><th>Technology</th><th>Why</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong style="color:#FFD600">Customer Menu App</strong></td><td><div class="badges"><span class="badge">Next.js 14</span><span class="badge y">PWA</span><span class="badge w">TailwindCSS</span></div></td><td>Opens in under 2 seconds on any 4G connection. No download. Works as a web app on any smartphone browser.</td></tr>
+        <tr><td><strong style="color:#FFD600">Waiter App</strong></td><td><div class="badges"><span class="badge">React Native</span><span class="badge y">Expo</span><span class="badge w">Offline queue</span></div></td><td>Native push notifications. Works offline. Runs on any Android phone without high specs.</td></tr>
+        <tr><td><strong style="color:#FFD600">Admin Dashboard</strong></td><td><div class="badges"><span class="badge">Next.js 14</span><span class="badge y">Recharts</span><span class="badge w">Responsive</span></div></td><td>Works on desktop and mobile. Real-time data charts. Accessible from anywhere.</td></tr>
+        <tr><td><strong style="color:#FF4D00">Backend</strong></td><td><div class="badges"><span class="badge">Node.js</span><span class="badge y">Fastify</span><span class="badge w">Socket.io</span></div></td><td>High-throughput API. Socket.io for real-time events — orders and bill alerts in under 500ms.</td></tr>
+        <tr><td><strong style="color:#FF4D00">Database</strong></td><td><div class="badges"><span class="badge">PostgreSQL</span><span class="badge y">Prisma ORM</span></div></td><td>Rock-solid relational integrity. Type-safe queries. Every transaction recorded and queryable.</td></tr>
+        <tr><td><strong style="color:#FF4D00">Cache</strong></td><td><div class="badges"><span class="badge">Redis</span><span class="badge y">BullMQ</span></div></td><td>Sub-millisecond session lookups. Notification job queuing. Handles peak traffic without dropping events.</td></tr>
+        <tr><td><strong style="color:#FF4D00">Notifications</strong></td><td><div class="badges"><span class="badge">Firebase FCM</span><span class="badge y">Web Push API</span></div></td><td>FCM for the Android waiter app. Reliable delivery even when the app is in background or phone is locked.</td></tr>
+        <tr><td><strong style="color:#FF4D00">Payments</strong></td><td><div class="badges"><span class="badge">Razorpay (optional)</span><span class="badge y">Offline-first</span></div></td><td>Default payment is offline (cash/UPI/card). Razorpay available as opt-in for restaurants wanting online payment.</td></tr>
+        <tr><td><strong style="color:#FF4D00">Hosting</strong></td><td><div class="badges"><span class="badge">Vercel</span><span class="badge y">Railway</span><span class="badge w">Neon PostgreSQL</span></div></td><td>Enterprise-grade infrastructure. 99.9% uptime. Auto-scaling. Indian data residency available.</td></tr>
+        <tr><td><strong style="color:#FF4D00">Analytics AI</strong></td><td><div class="badges"><span class="badge">Python / scikit-learn</span><span class="badge y">FastAPI</span></div></td><td>Weekly profit matrix model. Classifies every menu item. Sends actionable insight to admin dashboard.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- ===================== DATA MODELS ===================== -->
+<div class="sec">
+  <div class="sec-label">12 — Data Structure</div>
+  <div class="sec-title">What DMX Tracks</div>
+  <div class="g2">
+    <div class="schema">
+      <div class="schema-t">orders</div>
+      <div class="sf"><span class="fn">id</span> <span class="ft">UUID PK</span></div>
+      <div class="sf"><span class="fn">restaurant_id</span> <span class="ft">UUID FK</span></div>
+      <div class="sf"><span class="fn">table_id</span> <span class="ft">UUID FK</span></div>
+      <div class="sf"><span class="fn">session_token</span> <span class="ft">VARCHAR</span> <span class="note">// anonymous customer session</span></div>
+      <div class="sf"><span class="fn">status</span> <span class="ft">ENUM</span> <span class="note">// pending / received / served / billed / settled</span></div>
+      <div class="sf"><span class="fn">subtotal</span> <span class="ft">DECIMAL</span></div>
+      <div class="sf"><span class="fn">tax_amount</span> <span class="ft">DECIMAL</span></div>
+      <div class="sf"><span class="fn">total_amount</span> <span class="ft">DECIMAL</span></div>
+      <div class="sf"><span class="fn">payment_method</span> <span class="ft">ENUM</span> <span class="note">// cash / upi / card / online</span></div>
+      <div class="sf"><span class="fn">bill_requested_at</span> <span class="ft">TIMESTAMP</span></div>
+      <div class="sf"><span class="fn">settled_at</span> <span class="ft">TIMESTAMP</span></div>
+    </div>
+    <div class="schema">
+      <div class="schema-t">menu_items</div>
+      <div class="sf"><span class="fn">id</span> <span class="ft">UUID PK</span></div>
+      <div class="sf"><span class="fn">restaurant_id</span> <span class="ft">UUID FK</span></div>
+      <div class="sf"><span class="fn">name</span> <span class="ft">VARCHAR</span></div>
+      <div class="sf"><span class="fn">base_price</span> <span class="ft">DECIMAL</span></div>
+      <div class="sf"><span class="fn">cost_price</span> <span class="ft">DECIMAL</span> <span class="note">// for profit margin calculation</span></div>
+      <div class="sf"><span class="fn">is_available</span> <span class="ft">BOOLEAN</span></div>
+      <div class="sf"><span class="fn">is_veg</span> <span class="ft">BOOLEAN</span></div>
+      <div class="sf"><span class="fn">image_url</span> <span class="ft">VARCHAR</span></div>
+      <div class="sf"><span class="fn">active_discount</span> <span class="ft">JSONB</span> <span class="note">// {pct, expires_at}</span></div>
+      <div class="sf"><span class="fn">profit_score</span> <span class="ft">ENUM</span> <span class="note">// star / puzzle / sleeper / dead_weight</span></div>
+    </div>
+    <div class="schema">
+      <div class="schema-t">restaurants</div>
+      <div class="sf"><span class="fn">id</span> <span class="ft">UUID PK</span></div>
+      <div class="sf"><span class="fn">name</span> <span class="ft">VARCHAR</span></div>
+      <div class="sf"><span class="fn">slug</span> <span class="ft">VARCHAR UNIQUE</span> <span class="note">// URL identifier</span></div>
+      <div class="sf"><span class="fn">gst_number</span> <span class="ft">VARCHAR</span></div>
+      <div class="sf"><span class="fn">payment_methods</span> <span class="ft">JSONB</span> <span class="note">// {cash, upi, card, online}</span></div>
+      <div class="sf"><span class="fn">settings</span> <span class="ft">JSONB</span> <span class="note">// tax_pct, service_charge_pct</span></div>
+      <div class="sf"><span class="fn">license_key</span> <span class="ft">VARCHAR</span> <span class="note">// one-time purchase token</span></div>
+      <div class="sf"><span class="fn">amc_expires_at</span> <span class="ft">TIMESTAMP</span></div>
+    </div>
+    <div class="schema">
+      <div class="schema-t">staff</div>
+      <div class="sf"><span class="fn">id</span> <span class="ft">UUID PK</span></div>
+      <div class="sf"><span class="fn">restaurant_id</span> <span class="ft">UUID FK</span></div>
+      <div class="sf"><span class="fn">name</span> <span class="ft">VARCHAR</span></div>
+      <div class="sf"><span class="fn">role</span> <span class="ft">ENUM</span> <span class="note">// admin / manager / waiter / cashier</span></div>
+      <div class="sf"><span class="fn">email</span> <span class="ft">VARCHAR UNIQUE</span></div>
+      <div class="sf"><span class="fn">password_hash</span> <span class="ft">VARCHAR</span></div>
+      <div class="sf"><span class="fn">fcm_token</span> <span class="ft">VARCHAR</span> <span class="note">// Firebase push token</span></div>
+      <div class="sf"><span class="fn">is_active</span> <span class="ft">BOOLEAN</span></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end .page -->
+
+<!-- ===================== CTA ===================== -->
+<div class="cta-block">
+  <h2>Ready to Transform Your Restaurant?</h2>
+  <p>The restaurants that move first build the biggest advantages. Every week you wait is a week your competitors have better data, happier customers, and more profit.</p>
+  <div class="cta-btn">Let's Talk — Book a Demo</div>
+</div>
+
+<footer>
+  <div class="footer-brand">D<span>M</span>X</div>
+  <div class="footer-meta">
+    The Restaurant Operating System<br>
+    Client Proposal · June 2026 · Confidential<br>
+    One-Time License · No Subscriptions · No Commissions
+  </div>
+</footer>
+
+</body>
+</html>
